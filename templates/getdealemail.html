@@ -1,0 +1,52 @@
+{% block content %}{% if deals[0] is defined %}
+              <span style="color:red">New Today</span> | <span style="color:darkorange">{{keyword}}</span> around <span style="color:darkorange">${{dollarlimit}}</span><span style="float:right"><a href="http://shopyter.com/{{username}}">See more...</a></span>
+		      <hr>
+		        
+		        
+		       <table> 
+		       
+		        
+		        
+				 <tr>
+				{% for deal in deals %}
+				
+				   {% if loop.index is sameas 5 %}
+				   <tr></tr>
+				   
+				   {% endif %}
+		        
+		           
+		        
+		           {% if loop.index < 7 %}
+    	    	
+    			
+		
+
+		       		<td style="border: 1px solid lightgrey;background-color:#FDFDFC;">
+		       		    <table width="200">
+					   			<tr>
+					   				<td><img src="{{deal['image']}}" style="height: 200px;" width="200"/> </td>
+					    		</tr>
+					    				<tr>
+					    					<td><a href="{{deal['url']}}"  target="_blank">{{deal['thumbnail_title']}}</a> - <b>${{deal['price']}}</b><td>
+					    				</tr>
+					    				
+					   					<tr>
+					   						<td><span style="color:green;">From {{deal['source']}}</span>{% if deal['city'] is defined %}<span style="color:lightgrey;">{{deal['city']}}</span> {% endif %}</td>
+					   					</tr>
+					   					
+					   				
+					   	</table>
+	
+		       	    </td>
+		       	    
+		       	    {% endif %}
+		       	    
+		       	    
+		          
+		         {% endfor %}
+ 				 </tr>	
+		      
+		      </table>
+           
+{% endif %}{% endblock %}
