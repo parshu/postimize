@@ -3,7 +3,7 @@ import pymongo
 import string
 from bottle import TEMPLATE_PATH, route, jinja2_template as template, request, response
 from models import *
-from bottle import static_file
+from bottle import static_file, request
 import urllib
 import urllib2
 import sys
@@ -11,7 +11,7 @@ import json
 TEMPLATE_PATH.append('./templates')
 
 APP_CONFIG = {}
-APP_CONFIG["DBNAME"] = "jobsync"
+APP_CONFIG["DBNAME"] = "gigzibit"
 APP_CONFIG["THUMBNAIL_COLOR"] = "#FEFEFE"
 APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
@@ -37,6 +37,11 @@ def hello_world():
     return template('home.html', APP_CONFIG = APP_CONFIG)
     
 
+
+
+@route('/scan', method='POST')
+def scan(): 
+	return template('userhome.html', username = 'newuser', POST_REQUEST = request.POST.keys(), APP_CONFIG = APP_CONFIG)
 
 @route('/:username')
 def user(username):
