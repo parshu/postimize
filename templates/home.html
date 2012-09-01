@@ -46,29 +46,32 @@
 			<div style="color:white;background-color:brown;padding:5px 5px 5px;margin-left:0px;">Start here | check how your jobs appear on the internet</div>
 			
 			<div style="margin-top:20px;margin-left:20px;">
-			<form style="margin-bottom:5px;">
+			<form style="margin-bottom:5px;" name="jobvite" action="scan" method="post">
+				<input type="hidden"  name="requesttype" value="jobvite">
 				<label for="text21" style="top:3px;"><img src="http://b.vimeocdn.com/ps/625/62535_75.jpg" height="26px;"></img></label>
 				<input readonly="readonly" type="text" name="text21" style="width:70%;" value="http://hire.jobvite.com/Jobvite/Jobs.aspx?m=nBPwyhwg">
 				
-				<button class="small green" type="button">Import</button>
+				<button class="small green" type="submit">Import</button>
 			</form>
 			
-			<form style="margin-bottom:5px;">
+			<form style="margin-bottom:5px;" name="linkedin" action="scan" method="post">
+				<input type="hidden"  name="requesttype" value="linkedin">
 				<label style="top:3px;"><img src="http://codingbrains.com/images/linkedin_icon.gif" height="26px;"></img></label>
 				<input readonly="readonly" type="text"  style="width:70%;" value="http://www.linkedin.com/jsearch?company=stumbleupon">
 				
-				<button class="small green" type="button">Import</button>
+				<button class="small green" type="submit">Import</button>
 			</form>
 			
-			<form style="margin-bottom:5px;">
+			<form style="margin-bottom:5px;" name="www" action="scan" method="post">
+				<input type="hidden"  name="requesttype" value="www">
 				<label style="top:3px;"><img src="http://hypenotice.com/hyped/wp-content/uploads/www_logo.png" height="26px;"></img></label>
 				<input readonly="readonly" type="text"  style="width:70%;" value="http://www.stumbleupon.com/job?jvi=oUCqWfwC,job">
 				
-				<button class="small green" type="button">Import</button>
+				<button class="small green" type="submit">Import</button>
 			</form>
 			<hr class="alt1" style="margin:15px;"/>		
-			<form name="jobscan" action="scan" method="post">
-				
+			<form name="www" action="scan" method="post">
+				<input type="hidden"  name="requesttype" value="www">
 				<input type="text"  name="title" style="width:95%;margin-bottom:10px;" readonly="readonly" value="Lead Qualification Representative"><br>
 				<input type="text"  name="company" style="width:95%;margin-bottom:10px;" readonly="readonly" value="Simply Hired"><br>
 				<input type="text"  name="city" style="width:68%;margin-bottom:10px;" readonly="readonly" value="Sunnyvale">

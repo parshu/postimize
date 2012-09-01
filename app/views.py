@@ -41,20 +41,13 @@ def hello_world():
 
 @route('/scan', method='POST')
 def scan(): 
-	return template('userhome.html', username = 'newuser', POST_REQUEST = request.POST.keys(), APP_CONFIG = APP_CONFIG)
+	POST_REQUEST = request.POST
+	demojobs_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['demojobs']
+	print POST_REQUEST['requesttype']
+	demojobs = []
+	demojobs.extend([job for job in demojobs_table.find({"demotype": POST_REQUEST['requesttype']})])
+	sys.stdout.flush()
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs)
 
-@route('/:username')
-def user(username):
-    
-	users_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['users']
-	userinfo = users_table.find_one({'username': username})
-	if not userinfo:
-		return 'User %s not a part of our beta test. Please wait for your invite :-)' % username
 
-	
-		   
-	response.set_cookie('username', username, path = '/')    
-	
-    
-	return template('userhome.html', username = username, userinfo = userinfo, APP_CONFIG = APP_CONFIG)
 
