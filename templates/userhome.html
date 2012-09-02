@@ -34,12 +34,12 @@
 <div id="tabr1" class="tab-content" style="background-color:white;">
 
 
-	<table style="width:50%;"><tr><td width="30%">
-	<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits</span></td><td width="70%">
+	<table style="width:70%;"><tr><td width="40%">
+	<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits @minimum cost</span></td><td width="60%">
 <div id="slider-visits"></div>
-</td></tr><tr><td width="30%">
+</td></tr><tr><td width="40%">
 	<span style="color:grey; font-weight:bold;">Target </span>
-	<span style="color:#f6931f; font-weight:bold;">$</span><span id="cost" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> budget</span></td><td width="70%">
+	<span style="color:#f6931f; font-weight:bold;">$</span><span id="cost" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> budget @maximum visits</span></td><td width="60%">
 <div id="slider-cost"></div>
 </td></tr></table>
 
@@ -148,19 +148,19 @@ var stopdelay = 0;
 $(function() {
 		$( "#slider-visits" ).slider({
 			range: "min",
-			value: 37,
+			value: 9000,
 			min: 100,
-			max: 3000,
+			max: 9000,
 			slide: function( event, ui ) {
 				$( "#visits" ).text(  ui.value );
 			},
 			stop: function( event, ui ) {
-				var sliderval = parseInt($( "#visits" ).text(  ui.value ));
+				var sliderval = parseInt(ui.value);
 				var i = 1;
 				var totalvisits = 0;
 				var pricylistcount = 0;
 				var pricylist = [];
-				for(i = 1; i < noofsites;i++) {
+				for(i = 1; i <= noofsites;i++) {
 						var val = parseInt($( '#vpm' + i ).text());
 						var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
 						if(cost == 0) {
@@ -178,6 +178,7 @@ $(function() {
 					}
 					var val = parseInt($( '#vpm' + pricylist[pi] ).text());
 					totalvisits = totalvisits + val;
+					$("#trsite" + pricylist[pi]).fadeIn();
 					pi++;
 				}
 				for(i = pi;i < pricylistcount;i++) {
