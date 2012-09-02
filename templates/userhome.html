@@ -7,6 +7,7 @@
 {% include "htmlhead.html" %}
 
 <body>
+
 {% include "header.html" %}
 <!-- ===================================== BEGIN MAIN CONTENT ===================================== -->
 
@@ -18,7 +19,7 @@
 	{% if loop.index is sameas 1 %}
 		 class="current"
 	{% endif %}
-	><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}');">{{job['title']}}</a></li></div>
+	><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
@@ -31,7 +32,18 @@
 </ul>
 
 <div id="tabr1" class="tab-content" style="background-color:white;">
-<div>
+
+
+	<table style="width:50%;"><tr><td width="30%">
+	<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits</span></td><td width="70%">
+<div id="slider-visits"></div>
+</td></tr><tr><td width="30%">
+	<span style="color:grey; font-weight:bold;">Target </span>
+	<span style="color:#f6931f; font-weight:bold;">$</span><span id="cost" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> budget</span></td><td width="70%">
+<div id="slider-cost"></div>
+</td></tr></table>
+
+
 	<table cellspacing="0" cellpadding="0" class="sortable">
 	<thead><tr class="alt first last">
 		<th rel="0" value="Job Site">Job Site</th>
@@ -44,10 +56,10 @@
 	
 	<tbody>
 	{% for site in jobsites %}
-	<tr class="">
-		<td value="{{site['name']}}"><img src="{{site['logourl']}}" alt="{{site['name']}}" width="70px" height="30px"></img></td>
+	<tr id="trsite{{site['sourceid']}}" class="">
+		<td value="{{site['name']}}"><img src="{{site['logourl']}}" alt="{{site['name']}}" width="80px" height="30px"></img></td>
 		<td value="{{site['users']}}">{{site['users']}} million</td>
-		<td value="{{site['ourcpm']}}">
+		<td id="ourcpm{{site['sourceid']}}" value="{{site['ourcpm']}}" ourcpm="{{site['ourcpm']}}">
 		{% if site['ourcpm'] > 0 %}
 			${{site['ourcpm']}} 
 			{% if (site['cpm'] - site['ourcpm']) > 0 %}
@@ -58,8 +70,8 @@
 		{% endif %}
 		
 		</td>
-		<td value="{{site['vpm']}}"><div id="vpm{{site['sourceid']}}">
-		<span style="color:
+		<td id="tdvpm{{site['sourceid']}}" value="{{site['vpm']}}"><div>
+		<span id="vpm{{site['sourceid']}}" style="color:
 		{% if site['vpm'] > 500 %}
 		darkgreen
 		{% elif site['vpm'] > 200 %}
@@ -80,7 +92,9 @@
 		{% else %}
 		<span class="icon small red" data-icon="x"></span>
 		{% endif %}
+		<input type="checkbox" id="check{{site['sourceid']}}" />
 		</div>
+		
 		</td>
 	</tr>
 	{% endfor %}
@@ -98,7 +112,7 @@
 {% include "footer.html" %}
 
 <script>
-
+var noofsites = {{noofsites}};
 /*var opts = {
   lines: 13, // The number of lines to draw
   length: 7, // The length of each line
@@ -131,8 +145,65 @@ var stopdelay = 0;
 	$("#check{{site['sourceid']}}").delay(500 * {{loop.index}}).fadeIn();
 {% endfor %}
 
-		
-setTimeout('$("#expsort").click();',2000);
+$(function() {
+		$( "#slider-visits" ).slider({
+			range: "min",
+			value: 37,
+			min: 100,
+			max: 3000,
+			slide: function( event, ui ) {
+				$( "#visits" ).text(  ui.value );
+			},
+			stop: function( event, ui ) {
+				var sliderval = parseInt($( "#visits" ).text(  ui.value ));
+				var i = 1;
+				var totalvisits = 0;
+				var pricylistcount = 0;
+				var pricylist = [];
+				for(i = 1; i < noofsites;i++) {
+						var val = parseInt($( '#vpm' + i ).text());
+						var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
+						if(cost == 0) {
+							totalvisits = totalvisits + val;
+						} else {
+							pricylist.push(i);
+							pricylistcount++;
+						}
+						
+				}
+				var pi = 0;
+				while(sliderval > totalvisits) {
+					if(pi > pricylistcount) {
+						break;
+					}
+					var val = parseInt($( '#vpm' + pricylist[pi] ).text());
+					totalvisits = totalvisits + val;
+					pi++;
+				}
+				for(i = pi;i < pricylistcount;i++) {
+					$("#trsite" + pricylist[i]).fadeOut();
+				}
+			}
+		});
+		$( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
+	});	
+$(function() {
+		$( "#slider-cost" ).slider({
+			range: "min",
+			value: 37,
+			min: 0,
+			max: 700,
+			slide: function( event, ui ) {
+				$( "#cost" ).text(  ui.value );
+			},
+			stop: function( event, ui ) {
+			}
+		});
+		$( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
+	});	
+//setTimeout('$("#trsite3").attr("style","display:none;");',4000);
+
+
 
 function loadValues(jobid, plan, damping)
 {
@@ -158,7 +229,28 @@ function loadValues(jobid, plan, damping)
 		ajaxRequest.onreadystatechange = function(){
 			if(ajaxRequest.readyState == 4){
 				
-				var jsonresp = ajaxRequest.responseText;
+				var jsonresp = eval('(' + ajaxRequest.responseText + ')');
+				
+				var i = 1;
+				for(i = 1; i < {{noofsites}};i++) {
+					var color = 'red';
+					if(jsonresp[i]['vpm'] > 500) {
+						color = 'darkgreen';
+					}
+					else if(jsonresp[i]['vpm'] > 200) {
+						color = 'darkorange';
+					}
+					
+					var txt = jsonresp[i]['vpm'];
+					//$('#tdvpm' + jsonresp[i]['sourceid']).attr('value', txt);
+					$('#vpm' + jsonresp[i]['sourceid']).attr('style','color:' + color + ';');	
+					$('#vpm' + jsonresp[i]['sourceid']).text(txt);
+							
+					
+				}
+				$("#expsort").click();
+				setTimeout('$("#expsort").click();',5);
+				//$("#expsort").click();	
 			}
 		}
 		ajaxRequest.open("GET", '/getsitevalues/rating' + plan + '/' + damping, true); 

@@ -1,9 +1,9 @@
 _id,sourceid,name,description,logourl,defaultpresent,users,rating1,rating2,rating3,rating4,cpm,ourcpm,vpm
 1,1,LinkedIn,World's largest professional network with 100+ million users,http://www.wordtracker.com/attachments/LinkedIn-Logo.png,0,99,9,8,9,5,295,220,300
 2,2,Simply Hired,Free listings on the world's most comprehensive job search engine with 30 million users,http://www.simplyhired.com/c/simplyhired-home-page/images/c74/simplyhired-logo.png,1,30,8,7,6,8,0,0,620
-3,3,Simply Hired,Sponsored listings on the world's most comprehensive job search engine with 30 million users for high visibility,http://www.simplyhired.com/c/simplyhired-home-page/images/c74/simplyhired-logo.png,0,30,9,9,8,9,69,0,950
+3,3,Simply Hired,Sponsored listings on the world's most comprehensive job search engine with 30 million users for high visibility,http://www.simplyhired.com/c/simplyhired-home-page/images/c74/simplyhired-logo.png,0,30,9,9,8,9,69,69,950
 4,4,Indeed,Free listings on the world's largest job search engine with 60 million users,http://tctechcrunch2011.files.wordpress.com/2008/04/indeed_logo.png?w=640,1,60,8,7,6,8,0,0,750
-5,5,Indeed,Sponsored listings on the world's largest job search engine with 60 million users,http://tctechcrunch2011.files.wordpress.com/2008/04/indeed_logo.png?w=640,0,60,9,9,8,9,25,0,950
+5,5,Indeed,Sponsored listings on the world's largest job search engine with 60 million users,http://tctechcrunch2011.files.wordpress.com/2008/04/indeed_logo.png?w=640,0,60,9,9,8,9,25,25,950
 6,6,Monster,World's largest job board with 20 million users,http://www.linkstolearning.com/Images/monster_hd.gif,1,20,7,8,9,8,210,150,500
 7,7,Career Builder,,http://www.belladomain.com/wp-content/uploads/2010/01/careerbuilder-logo1.jpg,0,10,7,4,9,8,419,300,450
 8,8,Craigslist,Worlds largest classified listing site,http://www.trashsociety.com/wp-content/uploads/2011/03/craigslist-logo.jpeg,0,5,6,6,3,9,75,75,650
