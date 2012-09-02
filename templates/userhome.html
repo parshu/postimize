@@ -14,26 +14,84 @@
 <ul class="menu vertical">
 
 {% for job in demojobs %}
-	
+	<div id="{{job['jobid']}}" style="display:none;"><li id="li{{job['jobid']}}" 
 	{% if loop.index is sameas 1 %}
-		<div id="{{job['jobid']}}" style="display:none;"><li id="li{{job['jobid']}}" class="current"><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');">{{job['title']}}</a></li></div>
-	{% else %}
-		<div id="{{job['jobid']}}" style="display:none;"><li id="li{{job['jobid']}}"><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');">{{job['title']}}</a></li></div>
+		 class="current"
 	{% endif %}
+	><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}');">{{job['title']}}</a></li></div>
 {% endfor %}
 
 </ul>
 </div>
 <div class="col_9">
 <ul class="tabs left" >
-<li><a href="#tabr1">Tab1</a></li>
-<li><a href="#tabr2">Tab2</a></li>
-<li><a href="#tabr3">Tab3</a></li>
+<li><a href="#tabr1">Campaign</a></li>
+<li><a href="#tabr2">Edit/Sync Job</a></li>
+<li><a href="#tabr3">Performance</a></li>
 </ul>
 
-<div id="tabr1" class="tab-content" style="background-color:white;">Tab1</div>
-<div id="tabr2" class="tab-content" style="background-color:white;">Tab2</div>
-<div id="tabr3" class="tab-content" style="background-color:white;">Tab3</div>
+<div id="tabr1" class="tab-content" style="background-color:white;">
+<div>
+	<table cellspacing="0" cellpadding="0" class="sortable">
+	<thead><tr class="alt first last">
+		<th rel="0" value="Job Site">Job Site</th>
+		<th rel="1" value="Monthly Users">Monthly Users</th>
+		<th rel="2" value="Cost">Cost/Month</th>
+		<th id="expsort" rel="3" value="Expected Visits">Expected Visits</th>
+		<th rel="5" ></th>
+		
+	</tr></thead>
+	
+	<tbody>
+	{% for site in jobsites %}
+	<tr class="">
+		<td value="{{site['name']}}"><img src="{{site['logourl']}}" alt="{{site['name']}}" width="70px" height="30px"></img></td>
+		<td value="{{site['users']}}">{{site['users']}} million</td>
+		<td value="{{site['ourcpm']}}">
+		{% if site['ourcpm'] > 0 %}
+			${{site['ourcpm']}} 
+			{% if (site['cpm'] - site['ourcpm']) > 0 %}
+				<span style="color:darkgreen">(${{site['cpm'] - site['ourcpm']}} off)</span>
+			{% endif %}
+		{% else %}
+			<span style="color:darkgreen">Free</span>
+		{% endif %}
+		
+		</td>
+		<td value="{{site['vpm']}}"><div id="vpm{{site['sourceid']}}">
+		<span style="color:
+		{% if site['vpm'] > 500 %}
+		darkgreen
+		{% elif site['vpm'] > 200 %}
+		darkorange
+		{% else %}
+		red
+		{% endif %}
+		
+		">
+		{{site['vpm']}}
+		</span>
+		
+		</div></td>
+		<td value="">
+		<div id="check{{site['sourceid']}}" style="display:none;">
+		{% if site['defaultpresent'] is sameas 1 %}
+		<span class="icon small green" data-icon="c"></span>
+		{% else %}
+		<span class="icon small red" data-icon="x"></span>
+		{% endif %}
+		</div>
+		</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+</div>
+</div>
+<div id="tabr2" class="tab-content" style="background-color:white;">
+</div>
+<div id="tabr3" class="tab-content" style="background-color:white;">
+</div>
 </div
 <!-- ===================================== END MAIN CONTENT  ===================================== -->
 
@@ -41,7 +99,7 @@
 
 <script>
 
-var opts = {
+/*var opts = {
   lines: 13, // The number of lines to draw
   length: 7, // The length of each line
   width: 4, // The line thickness
@@ -60,13 +118,54 @@ var opts = {
 };
 var target = document.getElementById('foo');
 var spinner = new Spinner(opts).spin(target);
+*/
 var stopdelay = 0;
 {% for job in demojobs %}
-	$("#{{job['jobid']}}").delay(500 * {{job['jobid']}}).fadeIn();
-	stopdelay = {{job['jobid']}};
+	$("#{{job['jobid']}}").delay(500 * {{loop.index}}).fadeIn();
+	stopdelay = {{loop.index}};
 
 {% endfor %}
-setTimeout('spinner.stop();', 500 * stopdelay);
+
+//setTimeout('spinner.stop();', 500 * stopdelay);
+{% for site in jobsites %}
+	$("#check{{site['sourceid']}}").delay(500 * {{loop.index}}).fadeIn();
+{% endfor %}
+
+		
+setTimeout('$("#expsort").click();',2000);
+
+function loadValues(jobid, plan, damping)
+{
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				
+				var jsonresp = ajaxRequest.responseText;
+			}
+		}
+		ajaxRequest.open("GET", '/getsitevalues/rating' + plan + '/' + damping, true); 
+		ajaxRequest.send(null); 
+
+}
+
 </script>
 
 </body></html>  

@@ -15,7 +15,7 @@ APP_CONFIG["DBNAME"] = "gigzibit"
 APP_CONFIG["THUMBNAIL_COLOR"] = "#FEFEFE"
 APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
-	
+
 
 
     
@@ -27,6 +27,11 @@ def serve_static(dir1, filename):
 def serve_static(dir1, dir2, filename):
     return static_file(dir1 + '/' + dir2 + '/' + filename, root='./HTML-KickStart/')
 
+@route('/HTML-KickStart/<dir1>/<dir2>/<dir3>/:filename')
+def serve_static(dir1, dir2, dir3, filename):
+    return static_file(dir1 + '/' + dir2 + '/' + dir3 + '/' + filename, root='./HTML-KickStart/')
+
+
 @route('/HTML-KickStart/:filename')
 def serve_static(filename):
     return static_file(filename, root='./HTML-KickStart/')
@@ -37,17 +42,31 @@ def hello_world():
     return template('home.html', APP_CONFIG = APP_CONFIG)
     
 
-
+@route('/getsitevalues/<plan>/<damping>')
+def getsitevalues(plan, damping):
+	damping = float(damping)
+	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
+	jobsites = []
+	jobsites.extend([job for job in jobsites_table.find({},{'sourceid':1, plan:1, 'vpm': 1})])
+	i = 0
+	jobsiteshash = {}
+	for site in jobsites:
+		site['vpm'] = int(damping * site['vpm'])
+		site['vpm'] = int((site[plan]/10.0) * site['vpm'])
+		jobsiteshash[site['sourceid']] = site
+		i = i + 1
+	return jobsiteshash
 
 @route('/scan', method='POST')
 def scan(): 
 	POST_REQUEST = request.POST
 	demojobs_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['demojobs']
-	print POST_REQUEST['requesttype']
 	demojobs = []
 	demojobs.extend([job for job in demojobs_table.find({"demotype": POST_REQUEST['requesttype']})])
-	sys.stdout.flush()
-	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs)
+	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
+	jobsites = []
+	jobsites.extend([job for job in jobsites_table.find().sort("vpm", pymongo.DESCENDING)])
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites)
 
 
 

@@ -13,5 +13,11 @@ if __name__ == '__main__':
     if(sys.argv[4] == 'reload'):
         table.remove()
     for line in csv.DictReader(open(ifile_name, 'r')):
+	for key in line.keys():
+		try:
+			tmp = int(line[key])
+			line[key] = tmp
+		except:
+			pass
         table.insert(line)
 
