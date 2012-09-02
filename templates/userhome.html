@@ -19,7 +19,7 @@
 	{% if loop.index is sameas 1 %}
 		 class="current"
 	{% endif %}
-	><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
+	><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals();"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
@@ -33,7 +33,8 @@
 
 <div id="tabr1" class="tab-content" style="background-color:white;">
 
-
+	<span style="color:grey; font-weight:bold;">You optimized publish plan for a </span><span id="jobtitle" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> job in </span><span id="location" style="color:#f6931f; font-weight:bold;"></span>
+	<hr class="alt1" style="margin:0px 0;margin-bottom:20px;">
 	<table style="width:70%;"><tr><td width="40%">
 	<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits @minimum cost</span></td><td width="60%">
 <div id="slider-visits"></div>
@@ -220,19 +221,20 @@ function updateTotals()
     		}
     	}
 	});
-	$('#cpmtotal').text(cpmtotal);
+	$('#cpmtotal').text('$' + cpmtotal);
 	$('#slider-cost').slider('value',cpmtotal);
 	$( "#cost" ).text(cpmtotal);
 
 	$('#vpmtotal').text(vpmtotal);
-	$('#slider-visits').slider('value',vpmtotal);
-	$( "#visits" ).text(vpmtotal);
+	//$('#slider-visits').slider('value',vpmtotal);
+	//$( "#visits" ).text(vpmtotal);
 
 }
 
 updateTotals();
+loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
 
-function loadValues(jobid, plan, damping)
+function loadValues(jobid, plan, damping, title, location)
 {
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -275,6 +277,9 @@ function loadValues(jobid, plan, damping)
 							
 					
 				}
+				$('#jobtitle').text(title);
+				$('#location').text(location);
+				
 				$("#expsort").click();
 				setTimeout('$("#expsort").click();',5);
 				//$("#expsort").click();	
