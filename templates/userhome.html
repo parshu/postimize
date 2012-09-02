@@ -48,8 +48,8 @@
 	<thead><tr class="alt first last">
 		<th rel="0" value="Job Site">Job Site</th>
 		<th rel="1" value="Monthly Users">Monthly Users</th>
-		<th rel="2" value="Cost">Cost/Month</th>
-		<th id="expsort" rel="3" value="Expected Visits">Expected Visits</th>
+		<th rel="2" value="Cost">Cost/Month <span id="cpmtotal" style="color:#f6931f; font-weight:bold;"></span></th>
+		<th id="expsort" rel="3" value="Expected Visits">Expected Visits <span id="vpmtotal" style="color:#f6931f; font-weight:bold;"></span></th>
 		<th rel="5" ></th>
 		
 	</tr></thead>
@@ -92,7 +92,7 @@
 		{% else %}
 		<span class="icon small red" data-icon="x"></span>
 		{% endif %}
-		<input type="checkbox" id="check{{site['sourceid']}}" />
+		<input type="checkbox" vpm="{{site['vpm']}}" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
 		</div>
 		
 		</td>
@@ -179,11 +179,15 @@ $(function() {
 					var val = parseInt($( '#vpm' + pricylist[pi] ).text());
 					totalvisits = totalvisits + val;
 					$("#trsite" + pricylist[pi]).fadeIn();
+					$("#checkbox" + pricylist[pi]).attr("checked","yes");
 					pi++;
 				}
 				for(i = pi;i < pricylistcount;i++) {
 					$("#trsite" + pricylist[i]).fadeOut();
+					$("#checkbox" + pricylist[i]).removeAttr('checked');
+					//alert('check' + pricylist[i]);
 				}
+				updateTotals();
 			}
 		});
 		$( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
@@ -191,7 +195,7 @@ $(function() {
 $(function() {
 		$( "#slider-cost" ).slider({
 			range: "min",
-			value: 37,
+			value: 0,
 			min: 0,
 			max: 700,
 			slide: function( event, ui ) {
@@ -204,7 +208,29 @@ $(function() {
 	});	
 //setTimeout('$("#trsite3").attr("style","display:none;");',4000);
 
+function updateTotals()
+{
+	var cpmtotal = 0;
+	var vpmtotal = 0;
+	$('input').each(function(index) {
+    	if($(this).attr('type') == "checkbox") {
+    		if($(this).is(':checked')) {
+    			cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
+    			vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+    		}
+    	}
+	});
+	$('#cpmtotal').text(cpmtotal);
+	$('#slider-cost').slider('value',cpmtotal);
+	$( "#cost" ).text(cpmtotal);
 
+	$('#vpmtotal').text(vpmtotal);
+	$('#slider-visits').slider('value',vpmtotal);
+	$( "#visits" ).text(vpmtotal);
+
+}
+
+updateTotals();
 
 function loadValues(jobid, plan, damping)
 {
