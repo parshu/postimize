@@ -10,7 +10,7 @@
 
 {% include "header.html" %}
 <!-- ===================================== BEGIN MAIN CONTENT ===================================== -->
-
+<div id="clickedjobinfo"></div>
 <div id="foo" class="col_3">
 <ul class="menu vertical">
 
@@ -19,7 +19,7 @@
 	{% if loop.index is sameas 1 %}
 		 class="current"
 	{% endif %}
-	><a href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals();"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
+	><a id="joblink{{job['jobid']}}" href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
@@ -93,7 +93,7 @@
 		{% else %}
 		<span class="icon small red" data-icon="x"></span>
 		{% endif %}
-		<input type="checkbox" vpm="{{site['vpm']}}" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
+		<input type="checkbox" vpm="{{site['vpm']}}" autocomplete="off" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
 		</div>
 		
 		</td>
@@ -145,79 +145,120 @@ var stopdelay = 0;
 {% for site in jobsites %}
 	$("#check{{site['sourceid']}}").delay(500 * {{loop.index}}).fadeIn();
 {% endfor %}
+loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
 
-$(function() {
-		$( "#slider-visits" ).slider({
-			range: "min",
-			value: 9000,
-			min: 100,
-			max: 9000,
-			slide: function( event, ui ) {
-				$( "#visits" ).text(  ui.value );
-			},
-			stop: function( event, ui ) {
-				var sliderval = parseInt(ui.value);
-				var i = 1;
-				var totalvisits = 0;
-				var pricylistcount = 0;
-				var pricylist = [];
-				for(i = 1; i <= noofsites;i++) {
-						var val = parseInt($( '#vpm' + i ).text());
-						var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
-						if(cost == 0) {
-							totalvisits = totalvisits + val;
-						} else {
-							pricylist.push(i);
-							pricylistcount++;
-						}
-						
-				}
-				var pi = 0;
-				while(sliderval > totalvisits) {
-					if(pi > pricylistcount) {
-						break;
-					}
-					var val = parseInt($( '#vpm' + pricylist[pi] ).text());
+$( "#slider-visits" ).slider({
+	range: "min",
+	value: 9000,
+	min: 100,
+	max: 9000,
+	slide: function( event, ui ) {
+		$( "#visits" ).text(  ui.value );
+	},
+	stop: function( event, ui ) {
+		var sliderval = parseInt(ui.value);
+		var jobid = $( "#clickedjobinfo" ).attr('jobid');
+		$( "#" + jobid ).attr('visits', sliderval);
+		var i = 1;
+		var totalvisits = 0;
+		var pricylistcount = 0;
+		var pricylist = [];
+		for(i = 1; i <= noofsites;i++) {
+				var val = parseInt($( '#vpm' + i ).text());
+				var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
+				if(cost == 0) {
 					totalvisits = totalvisits + val;
-					$("#trsite" + pricylist[pi]).fadeIn();
-					$("#checkbox" + pricylist[pi]).attr("checked","yes");
-					pi++;
+				} else {
+					pricylist.push(i);
+					pricylistcount++;
 				}
-				for(i = pi;i < pricylistcount;i++) {
-					$("#trsite" + pricylist[i]).fadeOut();
-					$("#checkbox" + pricylist[i]).removeAttr('checked');
-					//alert('check' + pricylist[i]);
+				
+		}
+		var pi = 0;
+		while(sliderval > totalvisits) {
+			if(pi > pricylistcount) {
+				break;
+			}
+			var val = parseInt($( '#vpm' + pricylist[pi] ).text());
+			totalvisits = totalvisits + val;
+			$("#trsite" + pricylist[pi]).fadeIn();
+			$("#checkbox" + pricylist[pi]).attr("checked","yes");
+			pi++;
+		}
+		for(i = pi;i < pricylistcount;i++) {
+			$("#trsite" + pricylist[i]).fadeOut();
+			$("#checkbox" + pricylist[i]).removeAttr('checked');
+			//alert('check' + pricylist[i]);
+		}
+		updateTotals('visits');
+	}
+});
+$( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
+
+$( "#slider-cost" ).slider({
+	range: "min",
+	value: 0,
+	min: 0,
+	max: 1500,
+	slide: function( event, ui ) {
+		$( "#cost" ).text(  ui.value );
+	},
+	stop: function( event, ui ) {
+		var sliderval = parseInt(ui.value);
+		var jobid = $( "#clickedjobinfo" ).attr('jobid');
+		$( "#" + jobid ).attr('visits', sliderval);
+		var i = 1;
+		var totalvisits = 0;
+		var pricylistcount = 0;
+		var pricylist = [];
+		for(i = 1; i <= noofsites;i++) {
+				var val = parseInt($( '#vpm' + i ).text());
+				var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
+				if(cost == 0) {
+					totalvisits = totalvisits + val;
+				} else {
+					pricylist.push(i);
+					pricylistcount++;
 				}
-				updateTotals();
+				
+		}
+		var pi = 0;
+		var totalcost = 0;
+		while(totalcost <= sliderval) {
+			if(pi > pricylistcount) {
+				break;
 			}
-		});
-		$( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
-	});	
-$(function() {
-		$( "#slider-cost" ).slider({
-			range: "min",
-			value: 0,
-			min: 0,
-			max: 700,
-			slide: function( event, ui ) {
-				$( "#cost" ).text(  ui.value );
-			},
-			stop: function( event, ui ) {
+			var val = parseInt($( '#ourcpm' + pricylist[pi] ).attr('ourcpm'));
+			totalcost = totalcost + val;
+			if( totalcost >= sliderval) {
+				break;
 			}
-		});
-		$( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
-	});	
+			$("#trsite" + pricylist[pi]).fadeIn();
+			$("#checkbox" + pricylist[pi]).attr("checked","yes");
+			pi++;
+		}
+		for(i = pi;i < pricylistcount;i++) {
+			$("#trsite" + pricylist[i]).fadeOut();
+			$("#checkbox" + pricylist[i]).removeAttr('checked');
+			//alert('check' + pricylist[i]);
+		}
+		updateTotals('cost');
+	}
+});
+$( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
 //setTimeout('$("#trsite3").attr("style","display:none;");',4000);
 
-function updateTotals()
+function updateTotals(source)
 {
 	var cpmtotal = 0;
 	var vpmtotal = 0;
+	var ct = 0
 	$('input').each(function(index) {
     	if($(this).attr('type') == "checkbox") {
     		if($(this).is(':checked')) {
     			cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
     			vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+    			ct++;
     		}
     	}
 	});
@@ -226,13 +267,17 @@ function updateTotals()
 	$( "#cost" ).text(cpmtotal);
 
 	$('#vpmtotal').text(vpmtotal);
-	//$('#slider-visits').slider('value',vpmtotal);
-	//$( "#visits" ).text(vpmtotal);
+	if(source != "visits") {
+		$('#slider-visits').slider('value',vpmtotal);
+		$( "#visits" ).text(vpmtotal);
+		
+	}
 
 }
 
-updateTotals();
-loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
+
+updateTotals("init");
+$('#joblink{{demojobs[0]['jobid']}}').click();
 
 function loadValues(jobid, plan, damping, title, location)
 {
@@ -274,18 +319,24 @@ function loadValues(jobid, plan, damping, title, location)
 					//$('#tdvpm' + jsonresp[i]['sourceid']).attr('value', txt);
 					$('#vpm' + jsonresp[i]['sourceid']).attr('style','color:' + color + ';');	
 					$('#vpm' + jsonresp[i]['sourceid']).text(txt);
-							
+					$('#checkbox' + jsonresp[i]['sourceid']).attr('vpm',txt);
+					if(jsonresp[i]['ourcpm'] > 0) {
+						$('#checkbox' + jsonresp[i]['sourceid']).removeAttr('checked');
+					}
+					else {
+						$('#checkbox' + jsonresp[i]['sourceid']).attr('checked','yes');
+					}
 					
 				}
 				$('#jobtitle').text(title);
 				$('#location').text(location);
 				
 				$("#expsort").click();
-				setTimeout('$("#expsort").click();',5);
-				//$("#expsort").click();	
+				setTimeout('$("#expsort").click();',0);
+				//$("#expsort").click();
 			}
 		}
-		ajaxRequest.open("GET", '/getsitevalues/rating' + plan + '/' + damping, true); 
+		ajaxRequest.open("GET", '/getsitevalues/rating' + plan + '/' + damping, false); 
 		ajaxRequest.send(null); 
 
 }

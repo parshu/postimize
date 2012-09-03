@@ -47,7 +47,7 @@ def getsitevalues(plan, damping):
 	damping = float(damping)
 	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
 	jobsites = []
-	jobsites.extend([job for job in jobsites_table.find({},{'sourceid':1, plan:1, 'vpm': 1})])
+	jobsites.extend([job for job in jobsites_table.find({},{'sourceid':1, plan:1, 'vpm': 1, 'ourcpm':1})])
 	i = 0
 	jobsiteshash = {}
 	for site in jobsites:
