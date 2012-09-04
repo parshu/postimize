@@ -20,11 +20,8 @@
 <ul class="menu vertical">
 
 {% for job in demojobs %}
-	<div id="{{job['jobid']}}" style="display:none;"><li id="li{{job['jobid']}}" 
-	{% if loop.index is sameas 1 %}
-		 class="current"
-	{% endif %}
-	><a id="joblink{{job['jobid']}}" href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
+	<div id="{{job['jobid']}}" style="display:none;"><li id="li{{job['jobid']}}">
+	<a id="joblink{{job['jobid']}}" href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
@@ -92,11 +89,12 @@
 		
 		</div></td>
 		<td value="">
+		<div id="spin{{site['sourceid']}}"></div>
 		<div id="check{{site['sourceid']}}" style="display:none;">
 		{% if site['defaultpresent'] is sameas 1 %}
-		<span class="icon small green" data-icon="c"></span>
+		<span id="publishicon{{site['sourceid']}}" class="icon small green" data-icon="c"></span>
 		{% else %}
-		<span class="icon small red" data-icon="x"></span>
+		<span id="publishicon{{site['sourceid']}}" class="icon small red" data-icon="x"></span>
 		{% endif %}
 		<input type="checkbox" vpm="{{site['vpm']}}" autocomplete="off" sourceid="{{site['sourceid']}}" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
 		</div>
@@ -119,11 +117,11 @@
 
 <script>
 var noofsites = {{noofsites}};
-/*var opts = {
+var opts = {
   lines: 13, // The number of lines to draw
-  length: 7, // The length of each line
-  width: 4, // The line thickness
-  radius: 10, // The radius of the inner circle
+  length: 3, // The length of each line
+  width: 2, // The line thickness
+  radius: 4, // The radius of the inner circle
   corners: 1, // Corner roundness (0..1)
   rotate: 0, // The rotation offset
   color: '#000', // #rgb or #rrggbb
@@ -133,12 +131,14 @@ var noofsites = {{noofsites}};
   hwaccel: false, // Whether to use hardware acceleration
   className: 'spinner', // The CSS class to assign to the spinner
   zIndex: 2e9, // The z-index (defaults to 2000000000)
-  top: 'auto', // Top position relative to parent in px
-  left: '250' // Left position relative to parent in px
+  top: '0', // Top position relative to parent in px
+  left: '0' // Left position relative to parent in px
 };
-var target = document.getElementById('foo');
-var spinner = new Spinner(opts).spin(target);
-*/
+
+{% for site in jobsites %}
+	
+{% endfor %}
+
 var stopdelay = 0;
 var demotype = '{{demotype}}';
 var ctdelay = 1;
@@ -146,8 +146,13 @@ var delaytime = 500;
 if(demotype == "all") {
 	delaytime = 0;
 }
+var firstjoblink = "";
+
 {% for job in demojobs %}
 	if( (demotype == '{{job['demotype']}}') || (demotype == "all")) { 
+		if(firstjoblink == "") {
+			firstjoblink = "joblink{{job['jobid']}}";
+		}
 		$("#{{job['jobid']}}").delay(delaytime * ctdelay).fadeIn();
 		stopdelay = ctdelay;
 		ctdelay++;
@@ -157,7 +162,11 @@ if(demotype == "all") {
 
 //setTimeout('spinner.stop();', delaytime * stopdelay);
 {% for site in jobsites %}
+	/*setTimeout('var spinner{{site['sourceid']}} = new Spinner(opts).spin(document.getElementById("spin{{site['sourceid']}}"))',delaytime * ({{loop.index}} - 1));
+	setTimeout('spinner{{site['sourceid']}}.stop()',delaytime * {{loop.index}});
+	$("#spin{{site['sourceid']}}").delay(delaytime * {{loop.index}}).fadeOut();*/
 	$("#check{{site['sourceid']}}").delay(delaytime * {{loop.index}}).fadeIn();
+	
 {% endfor %}
 loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
 
@@ -289,6 +298,27 @@ function updateTotals(source)
 
 }
 
+function updatePublished()
+{
+	var cpmtotal = 0;
+	var vpmtotal = 0;
+	var ct = 0;
+	$('input').each(function(index) {
+    	if($(this).attr('type') == "checkbox") {
+    		if($(this).is(':checked')) {
+    			var sourceid = $(this).attr('sourceid');
+    			if( $('#publishicon' + sourceid).attr('class') == "icon small red") {
+					$('#publishicon' + sourceid).attr('class', 'icon small green');	
+					$('#publishicon' + sourceid).attr('data-icon', 'c');
+					$('#publishicon' + sourceid).children().text('c');			
+    			}
+    			ct++;
+    		}
+    	}
+	});
+	
+}
+
 function fillModal()
 {
 	var cpmtotal = 0;
@@ -309,7 +339,7 @@ function fillModal()
 	$('#publishcost').text(cpmtotal + '$');
 }
 updateTotals("init");
-$('#joblink{{demojobs[0]['jobid']}}').click();
+$('#' + firstjoblink).click();
 
 function loadValues(jobid, plan, damping, title, location)
 {
