@@ -10,6 +10,16 @@
 
 {% include "header.html" %}
 <!-- ===================================== BEGIN MAIN CONTENT ===================================== -->
+<div id="overlay">
+     <div>
+          <p>Content you want the user to see goes here.</p>
+     </div>
+</div>
+
+<!--<a href='#' onclick='overlay()'>Click here to show the overlay</a>-->
+</div>
+
+
 <div id="clickedjobinfo"></div>
 <div id="foo" class="col_3">
 <ul class="menu vertical">
@@ -135,15 +145,24 @@ var target = document.getElementById('foo');
 var spinner = new Spinner(opts).spin(target);
 */
 var stopdelay = 0;
+var demotype = '{{demotype}}';
+var ctdelay = 1;
+var delaytime = 500;
+if(demotype == "all") {
+	delaytime = 0;
+}
 {% for job in demojobs %}
-	$("#{{job['jobid']}}").delay(500 * {{loop.index}}).fadeIn();
-	stopdelay = {{loop.index}};
+	if( (demotype == '{{job['demotype']}}') || (demotype == "all")) { 
+		$("#{{job['jobid']}}").delay(delaytime * ctdelay).fadeIn();
+		stopdelay = ctdelay;
+		ctdelay++;
+	}
 
 {% endfor %}
 
-//setTimeout('spinner.stop();', 500 * stopdelay);
+//setTimeout('spinner.stop();', delaytime * stopdelay);
 {% for site in jobsites %}
-	$("#check{{site['sourceid']}}").delay(500 * {{loop.index}}).fadeIn();
+	$("#check{{site['sourceid']}}").delay(delaytime * {{loop.index}}).fadeIn();
 {% endfor %}
 loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
 

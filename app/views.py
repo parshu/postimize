@@ -62,11 +62,11 @@ def scan():
 	POST_REQUEST = request.POST
 	demojobs_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['demojobs']
 	demojobs = []
-	demojobs.extend([job for job in demojobs_table.find({"demotype": POST_REQUEST['requesttype']})])
+	demojobs.extend([job for job in demojobs_table.find()])
 	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
 	jobsites = []
 	jobsites.extend([job for job in jobsites_table.find().sort("vpm", pymongo.DESCENDING)])
-	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites))
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'])
 
 
 
