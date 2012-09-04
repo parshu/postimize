@@ -39,7 +39,7 @@ def serve_static(filename):
 
 @route('/')
 def hello_world():
-    return template('home.html', APP_CONFIG = APP_CONFIG)
+    return template('home.html', APP_CONFIG = APP_CONFIG, page = "home")
     
 
 @route('/getsitevalues/<plan>/<damping>')
@@ -66,7 +66,9 @@ def scan():
 	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
 	jobsites = []
 	jobsites.extend([job for job in jobsites_table.find().sort("vpm", pymongo.DESCENDING)])
-	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'])
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], page = "scan")
 
-
+@route('/test')
+def test():
+	return template('test.html') 
 

@@ -9,14 +9,9 @@
 <body>
 
 {% include "header.html" %}
-<!-- ===================================== BEGIN MAIN CONTENT ===================================== -->
-<div id="overlay">
-     <div>
-          <p>Content you want the user to see goes here.</p>
-     </div>
-</div>
 
-<!--<a href='#' onclick='overlay()'>Click here to show the overlay</a>-->
+{% include "publish_modal.html" %}
+
 </div>
 
 
@@ -61,7 +56,7 @@
 		<th rel="1" value="Monthly Users">Monthly Users</th>
 		<th rel="2" value="Cost">Cost/Month <span id="cpmtotal" style="color:#f6931f; font-weight:bold;"></span></th>
 		<th id="expsort" rel="3" value="Expected Visits">Expected Visits <span id="vpmtotal" style="color:#f6931f; font-weight:bold;"></span></th>
-		<th rel="5" ></th>
+		<th rel="5" ><button class="small blue" style="width:90%;font-size:small;" type="submit" href="#myModal" data-toggle="modal" onclick="fillModal();">Publish</button></th>
 		
 	</tr></thead>
 	
@@ -103,7 +98,7 @@
 		{% else %}
 		<span class="icon small red" data-icon="x"></span>
 		{% endif %}
-		<input type="checkbox" vpm="{{site['vpm']}}" autocomplete="off" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
+		<input type="checkbox" vpm="{{site['vpm']}}" autocomplete="off" sourceid="{{site['sourceid']}}" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
 		</div>
 		
 		</td>
@@ -294,7 +289,25 @@ function updateTotals(source)
 
 }
 
-
+function fillModal()
+{
+	var cpmtotal = 0;
+	var vpmtotal = 0;
+	var ct = 0;
+	$('input').each(function(index) {
+    	if($(this).attr('type') == "checkbox") {
+    		if($(this).is(':checked')) {
+    			cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
+    			vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+    			var sourceid = $(this).attr('sourceid');
+    			$('#modal' + sourceid).show();
+    			ct++;
+    		}
+    	}
+	});
+	$('#publishvisits').text(vpmtotal);
+	$('#publishcost').text(cpmtotal + '$');
+}
 updateTotals("init");
 $('#joblink{{demojobs[0]['jobid']}}').click();
 
