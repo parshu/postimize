@@ -17,6 +17,14 @@
 
 <div id="clickedjobinfo"></div>
 <div id="foo" class="col_3">
+<button class="large green"  style="width:100%;margin-bottom:10px;">Import More Jobs</button>
+<ul class="tabs" >
+<li><a href="#tabl1">By Job</a></li>
+<li><a href="#tabl2">By Category</a></li>
+<li><a href="#tabl3">By Company</a></li>
+
+</ul>
+<div id="tabl1" class="tab-content" style="margin:0px;padding:0px;">
 <ul class="menu vertical">
 
 {% for job in demojobs %}
@@ -25,6 +33,10 @@
 {% endfor %}
 
 </ul>
+</div>
+<div id="tabl2" class="tab-content"></div>
+<div id="tabl3" class="tab-content"></div>
+
 </div>
 <div class="col_9">
 <ul class="tabs left" >
@@ -37,6 +49,7 @@
 
 	<span style="color:grey; font-weight:bold;">You optimized publish plan for a </span><span id="jobtitle" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> job in </span><span id="location" style="color:#f6931f; font-weight:bold;"></span>
 	<hr class="alt1" style="margin:0px 0;margin-bottom:20px;">
+	<div style="background-color:#DDEDE6;">
 	<table style="width:70%;"><tr><td width="40%">
 	<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits @minimum cost</span></td><td width="60%">
 <div id="slider-visits"></div>
@@ -45,6 +58,7 @@
 	<span style="color:#f6931f; font-weight:bold;">$</span><span id="cost" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> budget @maximum visits</span></td><td width="60%">
 <div id="slider-cost"></div>
 </td></tr></table>
+	</div>
 
 
 	<table cellspacing="0" cellpadding="0" class="sortable">

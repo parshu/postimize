@@ -17,37 +17,60 @@
 	
 	<div>
 			<div class="col_7">	
-				<div style="background-color:#669E00;color:white;"><center>Recruiters | Staffing Agencies | Job Boards | Employers</center></div>
-				<div style="background-color:#E6F2ED; padding:10px;margin-bottom:10px;">
-					<div ><center><h4 style="margin: 0px 0;">Syndicate your listings.</h4></center></div>
-					<div><center><address><p style="margin: 0px 0;">Import your jobs, update here, updates everywhere.</p></address></center></div>
+				<div style="background-color:#80BCA3;color:white;margin-bottom:5px;font-size:large;min-height:25px;padding:15px;border-radius:5px;"><center>For Recruiters, Hiring agengies, Job boards & Employers</center></div>
+				<div style="background-color:{{APP_CONFIG['NAV_COLOR']}}; margin-bottom:10px;border-radius:5px;border:1px solid #E9DADA;">
+					<table><tr>
+						<td width="15%">
+							<span class="icon x-large gray" data-icon="v"></span>
+						</td>
+						<td>
+							<div><h4 style="margin: 0px 0;">Syndicate your listings.</h4></div>
+							<div><address><p style="margin: 0px 0;">Import your jobs, update here, updates everywhere.</p></address></div>
+						</td>
+					</tr></table>
 				</div>
-				<div style="background-color:#E6F2ED; padding:10px;margin-bottom:10px;">
-					<div ><center><h4 style="margin: 0px 0;">Optimize your campaign</h4></center></div>
-					<div><center><address><p style="margin: 0px 0;">Maximise visibility, minimize cost, target quality audience. <br>You set campaign goals. We help you create a broadcast plan</p></address></center></div>
+				<div style="background-color:{{APP_CONFIG['NAV_COLOR']}}; margin-bottom:10px;border-radius:5px;border:1px solid #E9DADA;">
+					<table><tr>
+						<td width="15%">
+							<span class="icon x-large gray" data-icon="z"></span>
+						</td>
+						<td>
+							<div><h4 style="margin: 0px 0;">Optimize your campaign</h4></div>
+							<div><address><p style="margin: 0px 0;">Maximise visibility, minimize cost, target quality audience. <br>You set campaign goals. We help you create a broadcast plan</p></address></div>
+						</td>
+					</tr></table>
 				</div>
-				<div style="background-color:#E6F2ED; padding:10px;margin-bottom:10px;">
-					<div ><center><h4 style="margin: 0px 0;">Broadcast your jobs & track results</h4></center></div>
-					<div><center><address><p style="margin: 0px 0;">Manage and measure success of your campaign in one place.</p></address></center></div>
+				<div style="background-color:{{APP_CONFIG['NAV_COLOR']}}; margin-bottom:10px;border-radius:5px;border:1px solid #E9DADA;">
+					<table><tr>
+						<td width="15%">
+							<span class="icon x-large gray" data-icon="["></span>
+						</td>
+						<td>
+							<div><h4 style="margin: 0px 0;">Broadcast your jobs & track results</h4></div>
+							<div><address><p style="margin: 0px 0;">Manage and measure success of your campaign in one place</p></address></div>
+						</td>
+					</tr></table>
 				</div>
-		
+				
+			
 				<!-- Video Placeholder -->
 				<a class="video-placeholder" href="#" style="background-color:black;width:100%;height:281px;"></a>
 				<!--<iframe src="http://player.vimeo.com/video/28438135?title=0&amp;byline=0&amp;portrait=0" width="100%" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> -->
 	
 			</div>
 	
-			<div class="col_5" >	
-				<div  style="padding:10px;background-color:#efefef;border:1px solid lightgrey;">
-					<div style="color:white;background-color:brown;padding:5px 5px 5px;margin-left:0px;">Start here | check how your jobs appear on the internet</div>
-			
+			<div class="col_5" >
+				
+				<div  style="padding:10px;background-color:#E6F2ED;border-radius:5px;">
+					
+					<div style="color:brown;margin-bottom:5px;font-size:medium;min-height:10px;padding:5px;">Start here | check how your jobs appear on the internet</div>
 					<div style="margin-top:20px;margin-left:20px;">
 						<form style="margin-bottom:5px;" name="jobvite" action="scan" method="post">
 							<input type="hidden"  name="requesttype" value="jobvite">
 							<label for="text21" style="top:3px;"><img src="http://b.vimeocdn.com/ps/625/62535_75.jpg" height="26px;"></img></label>
 							<input readonly="readonly" type="text" name="text21" style="width:70%;" value="http://hire.jobvite.com/Jobvite/Jobs.aspx?m=nBPwyhwg">
 							
-							<button class="small green" type="submit">Import</button>
+							<button class="small green" type="submit"><span class="icon small white" data-icon="("></span>Import</button>
 						</form>
 						
 						<form style="margin-bottom:5px;" name="linkedin" action="scan" method="post">
@@ -55,7 +78,7 @@
 							<label style="top:3px;"><img src="http://codingbrains.com/images/linkedin_icon.gif" height="26px;"></img></label>
 							<input readonly="readonly" type="text"  style="width:70%;" value="http://www.linkedin.com/jsearch?company=stumbleupon">
 							
-							<button class="small green" type="submit">Import</button>
+							<button class="small green" type="submit"><span class="icon small white" data-icon="("></span>Import</button>
 						</form>
 						
 						<form style="margin-bottom:5px;" name="www" action="scan" method="post">
@@ -63,7 +86,7 @@
 							<label style="top:3px;"><img src="http://hypenotice.com/hyped/wp-content/uploads/www_logo.png" height="26px;"></img></label>
 							<input readonly="readonly" type="text"  style="width:70%;" value="http://www.stumbleupon.com/job?jvi=oUCqWfwC,job">
 							
-							<button class="small green" type="submit">Import</button>
+							<button class="small green" type="submit"><span class="icon small white" data-icon="("></span>Import</button>
 						</form>
 						<hr class="alt1" style="margin:15px;"/>		
 						<form name="www" action="scan" method="post">
@@ -74,7 +97,7 @@
 							<input type="text"  name="state" style="width:30px;margin-bottom:10px;" readonly="readonly" value="CA">
 							<input type="text"  name="zip" style="width:70px;margin-bottom:10px;" readonly="readonly" value="94085"><br>
 							
-							<button class="small green" type="submit" style="width:70px;">Scan</button>
+							<button class="small green" type="submit" style="width:70px;"><span class="icon small white" data-icon="s"></span>Scan</button>
 						</form>
 					</div>
 				</div>
@@ -83,8 +106,20 @@
 					<input type="hidden"  name="requesttype" value="all">
 				
 					
-					<button class="large blue" type="submit" style="width:100%;">Click to see a demo account</button>
+					<button class="large green" type="submit" style="width:100%;">Click to see a demo account</button>
 				</form>
+				<div style="margin:15px;">
+					<div class="col_1"></div>
+					<div class="col_3" style="color:brown;margin-bottom:0px;min-height:70px;padding:0px;border-radius:5px;border:2px solid lightgrey;"><center><span style="font-size:small;">Upto 3 Jobs</span><br><span style="font-size:large;">Free</span></center></div>
+					<div class="col_3" style="color:brown;margin-bottom:0px;min-height:70px;padding:0px;border-radius:5px;border:2px solid lightgrey;"><center><span style="font-size:small;">4 to 50 Jobs</span><br><span style="font-size:large;">10$ / job</span></center></div>
+					<div class="col_3" style="color:brown;margin-bottom:0px;min-height:70px;padding:0px;border-radius:5px;border:2px solid lightgrey;"><center><span style="font-size:small;">50+ Jobs</span><br><span style="font-size:large;">Call us</span></center></div>
+				</div>
+				<div style="margin:45px;">
+					<div class="col_1"></div>
+					<div class="col_4" style="color:brown;margin-bottom:0px;min-height:70px;padding:0px;border-radius:5px;border:2px solid lightgrey;"><center><span style="font-size:large;">Targetted Audience</span></center></div>
+					<div class="col_4" style="color:brown;margin-bottom:0px;min-height:70px;padding:0px;border-radius:5px;border:2px solid lightgrey;"><center><span style="font-size:large;">Save 100's per job</span></center></div>
+					
+				</div>
 			</div>
 	<div>
 </div>
