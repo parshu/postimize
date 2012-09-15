@@ -66,7 +66,17 @@ def scan():
 	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
 	jobsites = []
 	jobsites.extend([job for job in jobsites_table.find().sort("vpm", pymongo.DESCENDING)])
-	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], page = "scan")
+	
+	jobsbyonet = {}
+	jobsbycompany = {}
+	for job in demojobs:
+		if(not jobsbyonet.has_key(job['onetdesc'])):
+			jobsbyonet[job['onetdesc']] = []
+		jobsbyonet[job['onetdesc']].append(job)
+		if(not jobsbycompany.has_key(job['company'])):
+			jobsbycompany[job['company']] = []
+		jobsbycompany[job['company']].append(job)
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], page = "scan", jobsbycompany = jobsbycompany, jobsbyonet = jobsbyonet)
 
 @route('/test')
 def test():

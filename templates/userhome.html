@@ -28,17 +28,43 @@
 <ul class="menu vertical">
 
 {% for job in demojobs %}
-	<div id="{{job['jobid']}}" style="display:none;"><li id="li{{job['jobid']}}">
+	<div id="{{job['jobid']}}" style="display:none;background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li id="li{{job['jobid']}}">
 	<a id="joblink{{job['jobid']}}" href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
 </div>
-<div id="tabl2" class="tab-content"></div>
-<div id="tabl3" class="tab-content"></div>
+<div id="tabl2" class="tab-content" style="margin:0px;padding:0px;overflow:0px;">
+<ul class="menu vertical">
+{% for onet in jobsbyonet.keys() %}
+	<div id="onet{{loop.index}}" style="background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li id="onetli{{loop.index}}">
+	<a id="onetlink{{loop.index}}" href="#" onclick="$('#onetli{{loop.index}}').toggleClass('current');togglecheck('#onetcheckbox{{loop.index}}');$('#onetdiv{{loop.index}}').toggle();"><input type="checkbox" checkboxsource="onet" autocomplete="off" onclick="" id="onetcheckbox{{loop.index}}"/>&nbsp;&nbsp;<span>{{onet}}</span></a></li></div>
+{% endfor %}
+</ul>
+</div>
+
+<div id="tabl3" class="tab-content" style="margin:0px;padding:0px;">
+</div>
 
 </div>
-<div class="col_9">
+
+<div class="col_3">
+	{% for onet in jobsbyonet.keys() %}
+	<div id="onetdiv{{loop.index}}" style="display:none;">
+		<ul class="menu vertical">
+		
+		{% for job in jobsbyonet[onet] %}
+			<div id="ojob{{job['jobid']}}" style="background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li id="ojobli{{job['jobid']}}">
+			
+			<a id="ojoblink{{job['jobid']}}" href="#"><input type="checkbox" checkboxsource="onetjob" autocomplete="off" onclick="" id="ojobcheckbox{{job['jobid']}}" checked="yes"/>&nbsp;&nbsp;<img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
+		{% endfor %}
+		
+		</ul>
+	</div>
+	{% endfor %}
+
+</div>
+<div class="col_6">
 <ul class="tabs left" >
 <li><a href="#tabr1">Campaign</a></li>
 <li><a href="#tabr2">Edit/Sync Job</a></li>
@@ -110,7 +136,7 @@
 		{% else %}
 		<span id="publishicon{{site['sourceid']}}" class="icon small red" data-icon="x"></span>
 		{% endif %}
-		<input type="checkbox" vpm="{{site['vpm']}}" autocomplete="off" sourceid="{{site['sourceid']}}" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
+		<input type="checkbox" checkboxsource="source" vpm="{{site['vpm']}}" autocomplete="off" sourceid="{{site['sourceid']}}" cpm="{{site['ourcpm']}}" onclick="updateTotals();" id="checkbox{{site['sourceid']}}" {% if site['ourcpm'] is sameas 0 %}checked="yes"{% endif %}/>
 		</div>
 		
 		</td>
@@ -291,12 +317,14 @@ function updateTotals(source)
 	var vpmtotal = 0;
 	var ct = 0
 	$('input').each(function(index) {
-    	if($(this).attr('type') == "checkbox") {
-    		if($(this).is(':checked')) {
-    			cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
-    			vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
-    			ct++;
-    		}
+    	if(($(this).attr('type') == "checkbox")) {
+    		if($(this).attr('checkboxsource') == "source") {
+				if($(this).is(':checked')) {
+					cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
+					vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+					ct++;
+				}
+			}
     	}
 	});
 	$('#cpmtotal').text('$' + cpmtotal);
@@ -318,15 +346,17 @@ function updatePublished()
 	var vpmtotal = 0;
 	var ct = 0;
 	$('input').each(function(index) {
-    	if($(this).attr('type') == "checkbox") {
-    		if($(this).is(':checked')) {
-    			var sourceid = $(this).attr('sourceid');
-    			if( $('#publishicon' + sourceid).attr('class') == "icon small red") {
-					$('#publishicon' + sourceid).attr('class', 'icon small green');	
-					$('#publishicon' + sourceid).attr('data-icon', 'c');
-					$('#publishicon' + sourceid).children().text('c');			
-    			}
-    			ct++;
+    	if(($(this).attr('type') == "checkbox")) {
+    		if($(this).attr('checkboxsource') == "source") {
+				if($(this).is(':checked')) {
+					var sourceid = $(this).attr('sourceid');
+					if( $('#publishicon' + sourceid).attr('class') == "icon small red") {
+						$('#publishicon' + sourceid).attr('class', 'icon small green');	
+						$('#publishicon' + sourceid).attr('data-icon', 'c');
+						$('#publishicon' + sourceid).children().text('c');			
+					}
+					ct++;
+				}
     		}
     	}
 	});
@@ -339,14 +369,16 @@ function fillModal()
 	var vpmtotal = 0;
 	var ct = 0;
 	$('input').each(function(index) {
-    	if($(this).attr('type') == "checkbox") {
-    		if($(this).is(':checked')) {
-    			cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
-    			vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
-    			var sourceid = $(this).attr('sourceid');
-    			$('#modal' + sourceid).show();
-    			ct++;
-    		}
+    	if(($(this).attr('type') == "checkbox")) {
+    		if($(this).attr('checkboxsource') == "source") {
+				if($(this).is(':checked')) {
+					cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
+					vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+					var sourceid = $(this).attr('sourceid');
+					$('#modal' + sourceid).show();
+					ct++;
+				}
+			}
     	}
 	});
 	$('#publishvisits').text(vpmtotal);
@@ -354,6 +386,16 @@ function fillModal()
 }
 updateTotals("init");
 $('#' + firstjoblink).click();
+
+
+function togglecheck(ele)
+{
+	if($(ele).is(':checked')) {
+		$(ele).removeAttr('checked');
+	} else {
+		$(ele).attr('checked', 'yes');
+	}
+}
 
 function loadValues(jobid, plan, damping, title, location)
 {
