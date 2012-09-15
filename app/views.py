@@ -56,10 +56,36 @@ def getsitevalues(plan, damping):
 		jobsiteshash[site['sourceid']] = site
 		i = i + 1
 	return jobsiteshash
+	
+@route('/getsitebulkvalues/<onetcode>/<jobid>')
+def getsitebulkvalues(onetcode, jobid):
+	onetcodes = onetcode.split("|")
+	clause = []
+	for onetcode in onetcodes:
+		clause.append({'onetcode': onetcode})
+	jobid = int(jobid)
+	demojobs_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['demojobs']
+	demojobs = []
+	demojobs.extend([job for job in demojobs_table.find({'$or': clause})])
+	jobsitehash = {}
+	
+	first = True
+	for job in demojobs:
+		if(job['jobid'] != jobid):
+			if(first == True):
+				jobsitehash = getsitevalues('rating' + str(job['plan']),job['damping'])
+				first = False
+			else:
+				temphash = getsitevalues('rating' + str(job['plan']),job['damping'])
+				for sourceid in jobsitehash.keys():
+					jobsitehash[sourceid]['vpm'] = jobsitehash[sourceid]['vpm'] + temphash[sourceid]['vpm']
+					jobsitehash[sourceid]['ourcpm'] = jobsitehash[sourceid]['ourcpm'] + temphash[sourceid]['ourcpm']
+				
+	return jobsitehash
 
-@route('/scan', method='POST')
+@route('/scan', method='GET')
 def scan(): 
-	POST_REQUEST = request.POST
+	POST_REQUEST = request.GET
 	demojobs_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['demojobs']
 	demojobs = []
 	demojobs.extend([job for job in demojobs_table.find()])
@@ -68,15 +94,20 @@ def scan():
 	jobsites.extend([job for job in jobsites_table.find().sort("vpm", pymongo.DESCENDING)])
 	
 	jobsbyonet = {}
+	onetcounts = {}
 	jobsbycompany = {}
+	onetdesctocode = {}
 	for job in demojobs:
 		if(not jobsbyonet.has_key(job['onetdesc'])):
 			jobsbyonet[job['onetdesc']] = []
+			onetdesctocode[job['onetdesc']] = job['onetcode']
 		jobsbyonet[job['onetdesc']].append(job)
 		if(not jobsbycompany.has_key(job['company'])):
 			jobsbycompany[job['company']] = []
 		jobsbycompany[job['company']].append(job)
-	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], page = "scan", jobsbycompany = jobsbycompany, jobsbyonet = jobsbyonet)
+	for onet in jobsbyonet.keys():
+		onetcounts[onet] = len(jobsbyonet[onet])
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], page = "scan", jobsbycompany = jobsbycompany, jobsbyonet = jobsbyonet, onetcounts = onetcounts, onetdesctocode = onetdesctocode)
 
 @route('/test')
 def test():

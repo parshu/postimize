@@ -15,8 +15,9 @@ if __name__ == '__main__':
     for line in csv.DictReader(open(ifile_name, 'r')):
 	for key in line.keys():
 		try:
-			tmp = int(line[key])
-			line[key] = tmp
+			if(key != "onetcode"):
+				tmp = int(line[key])
+				line[key] = tmp
 		except:
 			pass
         table.insert(line)

@@ -19,8 +19,8 @@
 <div id="foo" class="col_3">
 <button class="large green"  style="width:100%;margin-bottom:10px;">Import More Jobs</button>
 <ul class="tabs" >
-<li><a href="#tabl1">By Job</a></li>
-<li><a href="#tabl2">By Category</a></li>
+<li><a href="#tabl1" onclick="$('#jobsbyonetdiv').hide();$('#jobdescdiv').show();">By Job</a></li>
+<li><a href="#tabl2" onclick="$('#jobsbyonetdiv').show();$('#jobdescdiv').hide();loadBulkValues('selected categories','111','-1');updateTotals('init');">By Category</a></li>
 <li><a href="#tabl3">By Company</a></li>
 
 </ul>
@@ -28,17 +28,17 @@
 <ul class="menu vertical">
 
 {% for job in demojobs %}
-	<div id="{{job['jobid']}}" style="display:none;background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li id="li{{job['jobid']}}">
-	<a id="joblink{{job['jobid']}}" href="#" onclick="$('li').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
+	<div id="{{job['jobid']}}" style="display:none;background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li litype="job" id="li{{job['jobid']}}">
+	<a id="joblink{{job['jobid']}}" href="#" onclick="$('li[litype*=&quot;job&quot;]').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
 </div>
-<div id="tabl2" class="tab-content" style="margin:0px;padding:0px;overflow:0px;">
+<div id="tabl2" class="tab-content" style="margin:0px;padding:0px;overflow:0px;display:none;">
 <ul class="menu vertical">
 {% for onet in jobsbyonet.keys() %}
-	<div id="onet{{loop.index}}" style="background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li id="onetli{{loop.index}}">
-	<a id="onetlink{{loop.index}}" href="#" onclick="$('#onetli{{loop.index}}').toggleClass('current');togglecheck('#onetcheckbox{{loop.index}}');$('#onetdiv{{loop.index}}').toggle();"><input type="checkbox" checkboxsource="onet" autocomplete="off" onclick="" id="onetcheckbox{{loop.index}}"/>&nbsp;&nbsp;<span>{{onet}}</span></a></li></div>
+	<div id="onet{{loop.index}}" style="background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li litype="onet" onetcode="{{onetdesctocode[onet]}}" id="onetli{{loop.index}}">
+	<a id="onetlink{{loop.index}}" href="#" onclick="$('#onetli{{loop.index}}').toggleClass('current');togglecheck('#onetcheckbox{{loop.index}}');$('#onetdiv{{loop.index}}').toggle();loadBulkValues('{{onet}}','{{onetdesctocode[onet]}}','-1');updateTotals('init');"><input type="checkbox" checkboxsource="onet" autocomplete="off" onclick="" id="onetcheckbox{{loop.index}}"/>&nbsp;&nbsp;<span>{{onet}}</span><span style="float:right;color:darkorange;">{{onetcounts[onet]}}</span></a></li></div>
 {% endfor %}
 </ul>
 </div>
@@ -48,7 +48,7 @@
 
 </div>
 
-<div class="col_3">
+<div id="jobsbyonetdiv" class="col_3" style="display:none;">
 	{% for onet in jobsbyonet.keys() %}
 	<div id="onetdiv{{loop.index}}" style="display:none;">
 		<ul class="menu vertical">
@@ -64,6 +64,11 @@
 	{% endfor %}
 
 </div>
+<div id="jobdescdiv" class="col_3" style="background-color:white;">
+	job desc here
+
+</div>
+
 <div class="col_6">
 <ul class="tabs left" >
 <li><a href="#tabr1">Campaign</a></li>
@@ -197,6 +202,7 @@ var firstjoblink = "";
 		stopdelay = ctdelay;
 		ctdelay++;
 	}
+setTimeout("$('#tabl2').show()",delaytime * ctdelay);
 
 {% endfor %}
 
@@ -209,6 +215,7 @@ var firstjoblink = "";
 	
 {% endfor %}
 loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
+
 
 $( "#slider-visits" ).slider({
 	range: "min",
@@ -384,6 +391,9 @@ function fillModal()
 	$('#publishvisits').text(vpmtotal);
 	$('#publishcost').text(cpmtotal + '$');
 }
+$('#onetlink1').click();
+$('#onetlink4').click();
+$('#onetlink6').click();
 updateTotals("init");
 $('#' + firstjoblink).click();
 
@@ -396,6 +406,80 @@ function togglecheck(ele)
 		$(ele).attr('checked', 'yes');
 	}
 }
+
+
+function loadBulkValues(onetdesc, onetcode, jobid)
+{
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				
+				var jsonresp = eval('(' + ajaxRequest.responseText + ')');
+				
+				var i = 1;
+				for(i = 1; i < {{noofsites}};i++) {
+					var color = 'red';
+					if(jsonresp[i]['vpm'] > 500) {
+						color = 'darkgreen';
+					}
+					else if(jsonresp[i]['vpm'] > 200) {
+						color = 'darkorange';
+					}
+					
+					var txt = jsonresp[i]['vpm'];
+					//$('#tdvpm' + jsonresp[i]['sourceid']).attr('value', txt);
+					$('#vpm' + jsonresp[i]['sourceid']).attr('style','color:' + color + ';');	
+					$('#vpm' + jsonresp[i]['sourceid']).text(txt);
+					$('#checkbox' + jsonresp[i]['sourceid']).attr('vpm',txt);
+					if(jsonresp[i]['ourcpm'] > 0) {
+						$('#checkbox' + jsonresp[i]['sourceid']).removeAttr('checked');
+					}
+					else {
+						$('#checkbox' + jsonresp[i]['sourceid']).attr('checked','yes');
+					}
+					
+				}
+				$('#jobtitle').text(onetdesc);
+				$('#location').text('');
+				
+				$("#expsort").click();
+				setTimeout('$("#expsort").click();',0);
+				//$("#expsort").click();
+			}
+		}
+		var onetlist = new Array();
+		$('li[litype*="onet"]').each(function(index) {
+			if( $(this).hasClass('current') ) {
+				onetlist.push($(this).attr('onetcode'));
+				
+			}
+		});
+		
+	
+		ajaxRequest.open("GET", '/getsitebulkvalues/' + onetlist.join('|') + '/' + jobid, false); 
+		ajaxRequest.send(null); 
+
+}
+
+
 
 function loadValues(jobid, plan, damping, title, location)
 {
@@ -458,6 +542,7 @@ function loadValues(jobid, plan, damping, title, location)
 		ajaxRequest.send(null); 
 
 }
+
 
 </script>
 
