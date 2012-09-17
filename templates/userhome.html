@@ -29,7 +29,10 @@
 
 {% for job in demojobs %}
 	<div id="{{job['jobid']}}" style="display:none;background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};"><li litype="job" id="li{{job['jobid']}}">
-	<a id="joblink{{job['jobid']}}" href="#" onclick="$('li[litype*=&quot;job&quot;]').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
+	<a id="joblink{{job['jobid']}}" href="#" onclick="$('li[litype*=&quot;job&quot;]').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');fillJobSummary('{{job['title']}}', '{{job['city']}}, {{job['state']}}', 'Simply Hired');
+fillPerformanceSummary(400 * {{job['damping']}},300 * {{job['damping']}},40 * {{job['damping']}},'SimplyHired',25 * {{job['damping']}});
+drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Other',400 * {{job['damping']}}]]]);
+drawClickBarChart([['Free', parseInt(300 * {{job['damping']}})],['Paid', parseInt(100 * {{job['damping']}})]]);"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a></li></div>
 {% endfor %}
 
 </ul>
@@ -68,57 +71,60 @@
 
 <div id="jobdescdiv" class="col_3" style="padding:0px;margin:0px;" >
 	<div style="background-color:white;padding:10px;">
-	<span style="color:grey; font-weight:bold;">Job Summary</span>
+	<span style="color:grey; font-weight:bold;">Job Summary</span><a href="#" style="float:right;font-size:small;">View|Edit|Sync</a>
 	<hr class="alt1" style="margin:0px 0;margin-bottom:20px;">
 	<table cellspacing="0" cellpadding="0" class="striped tight">
 
 
 	<tbody><tr>
-		<td id="jobtitle" colspan="2" style="color:#f6931f;font-size:medium;">Senior System Analyst</td>
+		<td id="jobsummarytitle" colspan="2" style="color:#f6931f;font-size:medium;">Senior System Analyst</td>
 		
 		
 	</tr><tr>
-		<td id="joblocation" colspan="2" style="font-weight:bold;color:grey;">Sunnyvale, CA</td>
+		<td id="jobsummarylocation" colspan="2" style="font-weight:bold;color:grey;">Sunnyvale, CA</td>
 		
 		
 	</tr><tr>
-		<td id="jobcompany" style="color:grey;">Simply Hired</td>
-		<td id="jobtype" style="color:grey;">Full Time</td>
+		<td id="jobsummarycompany" style="color:grey;">Simply Hired</td>
+		<td id="jobsummarytype" style="color:grey;">Full Time</td>
 		
-	</tr><tr>
-		<td id="jobsummary" colspan="2">...Be a part of our engineering team to provide vital analytics to better understand user experience and recommendation efficiency while shaping the data driven...</td>
 	</tr></tbody>
 	</table>
 	</div>
 	
-	<div style="background-color:white;padding:10px;margin-top:20px;">
-	<span style="color:grey; font-weight:bold;">Performance Summary</span>
+	<div id="performancesummarydiv" style="background-color:white;padding:10px;margin-top:20px;opacity:1.0;">
+	<span style="color:grey; font-weight:bold;">Performance Summary</span><a href="#" style="float:right;font-size:small;">Full Report</a>
 	<hr class="alt1" style="margin:0px 0;margin-bottom:20px;">
-
+	<div style="opacity:1.0;color:black;font-size:x-large;display:none;">See performance reports when you publish jobs</div>
 	<table cellspacing="0" cellpadding="0" class="striped tight">
 
 
 	<tbody><tr>
 		<td style="color:grey;">Clicks</td>
-		<td style="color:grey;">300</td>		
+		<td id="summarytotalclicks" style="color:grey;">400</td>		
 		
 	</tr><tr>
 		<td style="color:grey;">Free Clicks</td>
-		<td style="color:grey;">300</td>
+		<td id="summaryfreeclicks" style="color:grey;">300</td>
 		
+		
+	</tr><tr>
+		<td style="color:grey;">Expected conversion</td>
+		<td id="summaryapplies" style="color:grey;">40 applies</td>		
 		
 	</tr><tr>
 		<td style="color:grey;">Top source</td>
-		<td style="color:grey;">Simplyhired</td>
+		<td id="summarytopsource" style="color:grey;">Simplyhired</td>
 		
 	</tr><tr>
 		<td style="color:grey;">Money spent</td>
-		<td style="color:grey;">$0</td>
+		<td id="summarymoneyspent" style="color:grey;">$25</td>
 	</tr></tbody>
 	</table>
 	
 
 	<div id="chartdiv" style="width:90%;height:200px;"></div>
+	<div id="clickbarchartdiv" style="width:90%;height:200px;margin-top:20px;"></div>
 
 	</div>
 	
@@ -321,7 +327,8 @@ $( "#slider-visits" ).slider({
 });
 $( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
 
-drawBarChart();
+
+
 
 $( "#slider-cost" ).slider({
 	range: "min",
@@ -377,8 +384,27 @@ $( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
 //setTimeout('$("#trsite3").attr("style","display:none;");',4000);
 
 
-function drawBarChart() {
-   var plot1 = $.jqplot('chartdiv', [[['Linkedin',100],['Simplyhired',200],['Indeed',190], ['Other',400]]], {
+function fillJobSummary(title, location, company) {
+	$('#jobsummarytitle').text(title);
+	$('#jobsummarylocation').text(location);
+	$('#jobsummarycompany').text(company);
+	
+
+}
+
+function fillPerformanceSummary(clicks, freeclicks, applies, topsource, moneyspent) {
+	$('#summarytotalclicks').text(parseInt(clicks));
+	$('#summaryfreeclicks').text(parseInt(freeclicks));
+	$('#summaryapplies').text(parseInt(applies) + ' applies');
+	$('#summarytopsource').text(topsource);
+	$('#summarymoneyspent').text('$' + parseInt(moneyspent));
+
+}
+
+function drawSharePieChart(data) {
+   $('#chartdiv').empty();
+   var plot1 = $.jqplot('chartdiv', data, {
+   		title:'Clicks by Source',
         gridPadding: {top:0, bottom:0, left:0, right:0},
         seriesDefaults:{
             renderer:$.jqplot.PieRenderer,
@@ -395,6 +421,30 @@ function drawBarChart() {
             marginTop: '0px'
         }      
     });
+       
+}
+
+function drawClickBarChart(data) {
+  var line1 = data;
+ 	 $('#clickbarchartdiv').empty();
+    $('#clickbarchartdiv').jqplot([line1], {
+        title:'Clicks by $',
+        seriesDefaults:{
+        	pointLabels: { show: true },
+            renderer:$.jqplot.BarRenderer,
+            rendererOptions: {
+                // Set the varyBarColor option to true to use different colors for each bar.
+                // The default series colors are used.
+                varyBarColor: true
+            }
+        },
+        axes:{
+            xaxis:{
+                renderer: $.jqplot.CategoryAxisRenderer
+            }
+        }
+    });
+  
        
 }
 
