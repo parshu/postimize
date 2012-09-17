@@ -36,6 +36,14 @@ def serve_static(dir1, dir2, dir3, filename):
 def serve_static(filename):
     return static_file(filename, root='./HTML-KickStart/')
 
+@route('/dist/:filename')
+def serve_static(filename):
+    return static_file(filename, root='./dist/')
+  
+@route('/dist/<dir1>/:filename')
+def serve_static(dir1, filename):
+    return static_file(dir1 + '/' + filename, root='./dist/')  
+
 
 @route('/')
 def hello_world():

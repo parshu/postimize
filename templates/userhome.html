@@ -64,9 +64,65 @@
 	{% endfor %}
 
 </div>
-<div id="jobdescdiv" class="col_3" style="background-color:white;">
-	job desc here
 
+
+<div id="jobdescdiv" class="col_3" style="padding:0px;margin:0px;" >
+	<div style="background-color:white;padding:10px;">
+	<span style="color:grey; font-weight:bold;">Job Summary</span>
+	<hr class="alt1" style="margin:0px 0;margin-bottom:20px;">
+	<table cellspacing="0" cellpadding="0" class="striped tight">
+
+
+	<tbody><tr>
+		<td id="jobtitle" colspan="2" style="color:#f6931f;font-size:medium;">Senior System Analyst</td>
+		
+		
+	</tr><tr>
+		<td id="joblocation" colspan="2" style="font-weight:bold;color:grey;">Sunnyvale, CA</td>
+		
+		
+	</tr><tr>
+		<td id="jobcompany" style="color:grey;">Simply Hired</td>
+		<td id="jobtype" style="color:grey;">Full Time</td>
+		
+	</tr><tr>
+		<td id="jobsummary" colspan="2">...Be a part of our engineering team to provide vital analytics to better understand user experience and recommendation efficiency while shaping the data driven...</td>
+	</tr></tbody>
+	</table>
+	</div>
+	
+	<div style="background-color:white;padding:10px;margin-top:20px;">
+	<span style="color:grey; font-weight:bold;">Performance Summary</span>
+	<hr class="alt1" style="margin:0px 0;margin-bottom:20px;">
+
+	<table cellspacing="0" cellpadding="0" class="striped tight">
+
+
+	<tbody><tr>
+		<td style="color:grey;">Clicks</td>
+		<td style="color:grey;">300</td>		
+		
+	</tr><tr>
+		<td style="color:grey;">Free Clicks</td>
+		<td style="color:grey;">300</td>
+		
+		
+	</tr><tr>
+		<td style="color:grey;">Top source</td>
+		<td style="color:grey;">Simplyhired</td>
+		
+	</tr><tr>
+		<td style="color:grey;">Money spent</td>
+		<td style="color:grey;">$0</td>
+	</tr></tbody>
+	</table>
+	
+
+	<div id="chartdiv" style="width:90%;height:200px;"></div>
+
+	</div>
+	
+	
 </div>
 
 <div class="col_6">
@@ -265,6 +321,8 @@ $( "#slider-visits" ).slider({
 });
 $( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
 
+drawBarChart();
+
 $( "#slider-cost" ).slider({
 	range: "min",
 	value: 0,
@@ -317,6 +375,28 @@ $( "#slider-cost" ).slider({
 });
 $( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
 //setTimeout('$("#trsite3").attr("style","display:none;");',4000);
+
+
+function drawBarChart() {
+   var plot1 = $.jqplot('chartdiv', [[['Linkedin',100],['Simplyhired',200],['Indeed',190], ['Other',400]]], {
+        gridPadding: {top:0, bottom:0, left:0, right:0},
+        seriesDefaults:{
+            renderer:$.jqplot.PieRenderer,
+            trendline:{ show:false },
+            rendererOptions: { padding: 3, showDataLabels: true }
+        },
+        legend:{
+            show:true,
+            placement: 'inside',
+            rendererOptions: {
+                numberRows: 2
+            },
+            location:'n',
+            marginTop: '0px'
+        }      
+    });
+       
+}
 
 function updateTotals(source)
 {
