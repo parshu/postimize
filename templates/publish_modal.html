@@ -1,20 +1,21 @@
  <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="myModal">
-            <div class="modal-header">
-              <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-              <h3 id="myModalLabel">Review your publish plan: <span id="publishvisits" style="color:green;"></span> visits</h3>
-            </div>
-            <div id="publishbody" class="modal-body">
-             	<table><thead></thead>
-             	<tbody>
-             	{% for site in jobsites %}
-             	<tr style="display:none;" id="modal{{site['sourceid']}}"><td><img src="{{site['logourl']}}" alt="{{site['name']}}" width="80px" height="30px"></img></td><td style="font-size:medium;"> {%if site['ourcpm'] is sameas 0 %}<span style="color:darkgreen;">Free</span>{% else %}<span style="color:red;">{{site['ourcpm']}}$</span>{% endif %} </td></tr>
-             	{% endfor %}
-             	</tbody>
-             	</table>
-            </div>
-            <div class="modal-footer">
-               <span style="float:left;font-size:x-large;font-weight:bold;">Cost: <span id="publishcost" style="color:red;"></span></span>
-              <button data-dismiss="modal" class="medium grey">Cancel</button>
-              <button data-dismiss="modal" class="medium blue" onclick="updatePublished();">Publish</button>
-            </div>
-          </div>
+	<div class="modal-header">
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+		<h3 id="myModalLabel">Review your publish plan: <span id="publishvisits" style="color:green;"></span> visits</h3>
+	</div>
+	<div id="publishbody" class="modal-body">
+		<table>
+			<thead></thead>
+			<tbody>
+				{% for site in jobsites %}
+				<tr style="display:none;" id="modal{{site['sourceid']}}"><td><img src="{{site['logourl']}}" alt="{{site['name']}}" width="80px" height="30px"></img></td><td style="font-size:medium;"> {%if site['ourcpm'] is sameas 0 %}<span style="color:darkgreen;">Free</span>{% else %}<span style="color:red;">{{site['ourcpm']}}$</span>{% endif %} </td></tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="modal-footer">
+	   	<span style="float:left;font-size:x-large;font-weight:bold;">Cost: </span><span id="publishcost" style="color:red;"></span>
+		<button data-dismiss="modal" class="medium grey">Cancel</button>
+	  	<button data-dismiss="modal" class="medium blue" onclick="updatePublished();">Publish</button>
+	</div>
+</div>

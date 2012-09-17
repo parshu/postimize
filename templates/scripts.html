@@ -1,0 +1,453 @@
+<script>
+var noofsites = {{noofsites}};
+var opts = {
+  lines: 13, // The number of lines to draw
+  length: 3, // The length of each line
+  width: 2, // The line thickness
+  radius: 4, // The radius of the inner circle
+  corners: 1, // Corner roundness (0..1)
+  rotate: 0, // The rotation offset
+  color: '#000', // #rgb or #rrggbb
+  speed: 1, // Rounds per second
+  trail: 60, // Afterglow percentage
+  shadow: false, // Whether to render a shadow
+  hwaccel: false, // Whether to use hardware acceleration
+  className: 'spinner', // The CSS class to assign to the spinner
+  zIndex: 2e9, // The z-index (defaults to 2000000000)
+  top: '0', // Top position relative to parent in px
+  left: '0' // Left position relative to parent in px
+};
+
+{% for site in jobsites %}
+	
+{% endfor %}
+
+var stopdelay = 0;
+var demotype = '{{demotype}}';
+var ctdelay = 1;
+var delaytime = 500;
+if(demotype == "all") {
+	delaytime = 0;
+}
+var firstjoblink = "";
+
+{% for job in demojobs %}
+	if( (demotype == '{{job['demotype']}}') || (demotype == "all")) { 
+		if(firstjoblink == "") {
+			firstjoblink = "joblink{{job['jobid']}}";
+		}
+		$("#{{job['jobid']}}").delay(delaytime * ctdelay).fadeIn();
+		stopdelay = ctdelay;
+		ctdelay++;
+	}
+setTimeout("$('#tabl2').show()",delaytime * ctdelay);
+
+{% endfor %}
+
+//setTimeout('spinner.stop();', delaytime * stopdelay);
+{% for site in jobsites %}
+	/*setTimeout('var spinner{{site['sourceid']}} = new Spinner(opts).spin(document.getElementById("spin{{site['sourceid']}}"))',delaytime * ({{loop.index}} - 1));
+	setTimeout('spinner{{site['sourceid']}}.stop()',delaytime * {{loop.index}});
+	$("#spin{{site['sourceid']}}").delay(delaytime * {{loop.index}}).fadeOut();*/
+	$("#check{{site['sourceid']}}").delay(delaytime * {{loop.index}}).fadeIn();
+	
+{% endfor %}
+loadValues('{{demojobs[0]['jobid']}}','{{demojobs[0]['plan']}}','{{demojobs[0]['damping']}}','{{demojobs[0]['title']}}','{{demojobs[0]['city']}}, {{demojobs[0]['state']}}');
+
+
+$( "#slider-visits" ).slider({
+	range: "min",
+	value: 9000,
+	min: 100,
+	max: 9000,
+	slide: function( event, ui ) {
+		$( "#visits" ).text(  ui.value );
+	},
+	stop: function( event, ui ) {
+		var sliderval = parseInt(ui.value);
+		var jobid = $( "#clickedjobinfo" ).attr('jobid');
+		$( "#" + jobid ).attr('visits', sliderval);
+		var i = 1;
+		var totalvisits = 0;
+		var pricylistcount = 0;
+		var pricylist = [];
+		for(i = 1; i <= noofsites;i++) {
+				var val = parseInt($( '#vpm' + i ).text());
+				var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
+				if(cost == 0) {
+					totalvisits = totalvisits + val;
+				} else {
+					pricylist.push(i);
+					pricylistcount++;
+				}
+				
+		}
+		var pi = 0;
+		while(sliderval > totalvisits) {
+			if(pi > pricylistcount) {
+				break;
+			}
+			var val = parseInt($( '#vpm' + pricylist[pi] ).text());
+			totalvisits = totalvisits + val;
+			$("#trsite" + pricylist[pi]).fadeIn();
+			$("#checkbox" + pricylist[pi]).attr("checked","yes");
+			pi++;
+		}
+		for(i = pi;i < pricylistcount;i++) {
+			$("#trsite" + pricylist[i]).fadeOut();
+			$("#checkbox" + pricylist[i]).removeAttr('checked');
+			//alert('check' + pricylist[i]);
+		}
+		updateTotals('visits');
+	}
+});
+$( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
+
+
+
+
+$( "#slider-cost" ).slider({
+	range: "min",
+	value: 0,
+	min: 0,
+	max: 1500,
+	slide: function( event, ui ) {
+		$( "#cost" ).text(  ui.value );
+	},
+	stop: function( event, ui ) {
+		var sliderval = parseInt(ui.value);
+		var jobid = $( "#clickedjobinfo" ).attr('jobid');
+		$( "#" + jobid ).attr('visits', sliderval);
+		var i = 1;
+		var totalvisits = 0;
+		var pricylistcount = 0;
+		var pricylist = [];
+		for(i = 1; i <= noofsites;i++) {
+				var val = parseInt($( '#vpm' + i ).text());
+				var cost = parseInt($( '#ourcpm' + i ).attr('ourcpm'));
+				if(cost == 0) {
+					totalvisits = totalvisits + val;
+				} else {
+					pricylist.push(i);
+					pricylistcount++;
+				}
+				
+		}
+		var pi = 0;
+		var totalcost = 0;
+		while(totalcost <= sliderval) {
+			if(pi > pricylistcount) {
+				break;
+			}
+			var val = parseInt($( '#ourcpm' + pricylist[pi] ).attr('ourcpm'));
+			totalcost = totalcost + val;
+			if( totalcost >= sliderval) {
+				break;
+			}
+			$("#trsite" + pricylist[pi]).fadeIn();
+			$("#checkbox" + pricylist[pi]).attr("checked","yes");
+			pi++;
+		}
+		for(i = pi;i < pricylistcount;i++) {
+			$("#trsite" + pricylist[i]).fadeOut();
+			$("#checkbox" + pricylist[i]).removeAttr('checked');
+			//alert('check' + pricylist[i]);
+		}
+		updateTotals('cost');
+	}
+});
+$( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
+//setTimeout('$("#trsite3").attr("style","display:none;");',4000);
+
+
+function fillJobSummary(title, location, company) {
+	$('#jobsummarytitle').text(title);
+	$('#jobsummarylocation').text(location);
+	$('#jobsummarycompany').text(company);
+	
+
+}
+
+function fillPerformanceSummary(clicks, freeclicks, applies, topsource, moneyspent) {
+	$('#summarytotalclicks').text(parseInt(clicks));
+	$('#summaryfreeclicks').text(parseInt(freeclicks));
+	$('#summaryapplies').text(parseInt(applies) + ' applies');
+	$('#summarytopsource').text(topsource);
+	$('#summarymoneyspent').text('$' + parseInt(moneyspent));
+
+}
+
+function drawSharePieChart(data) {
+   $('#chartdiv').empty();
+   var plot1 = $.jqplot('chartdiv', data, {
+   		title:'Clicks by Source',
+        gridPadding: {top:0, bottom:0, left:0, right:0},
+        seriesDefaults:{
+            renderer:$.jqplot.PieRenderer,
+            trendline:{ show:false },
+            rendererOptions: { padding: 3, showDataLabels: true }
+        },
+        legend:{
+            show:true,
+            placement: 'inside',
+            rendererOptions: {
+                numberRows: 2
+            },
+            location:'n',
+            marginTop: '0px'
+        }      
+    });
+       
+}
+
+function drawClickBarChart(data) {
+  var line1 = data;
+ 	 $('#clickbarchartdiv').empty();
+    $('#clickbarchartdiv').jqplot([line1], {
+        title:'Clicks by $',
+        seriesDefaults:{
+        	pointLabels: { show: true },
+            renderer:$.jqplot.BarRenderer,
+            rendererOptions: {
+                // Set the varyBarColor option to true to use different colors for each bar.
+                // The default series colors are used.
+                varyBarColor: true
+            }
+        },
+        axes:{
+            xaxis:{
+                renderer: $.jqplot.CategoryAxisRenderer
+            }
+        }
+    });
+  
+       
+}
+
+function updateTotals(source)
+{
+	var cpmtotal = 0;
+	var vpmtotal = 0;
+	var ct = 0
+	$('input').each(function(index) {
+    	if(($(this).attr('type') == "checkbox")) {
+    		if($(this).attr('checkboxsource') == "source") {
+				if($(this).is(':checked')) {
+					cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
+					vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+					ct++;
+				}
+			}
+    	}
+	});
+	$('#cpmtotal').text('$' + cpmtotal);
+	$('#slider-cost').slider('value',cpmtotal);
+	$( "#cost" ).text(cpmtotal);
+
+	$('#vpmtotal').text(vpmtotal);
+	if(source != "visits") {
+		$('#slider-visits').slider('value',vpmtotal);
+		$( "#visits" ).text(vpmtotal);
+		
+	}
+
+}
+
+function updatePublished()
+{
+	var cpmtotal = 0;
+	var vpmtotal = 0;
+	var ct = 0;
+	$('input').each(function(index) {
+    	if(($(this).attr('type') == "checkbox")) {
+    		if($(this).attr('checkboxsource') == "source") {
+				if($(this).is(':checked')) {
+					var sourceid = $(this).attr('sourceid');
+					if( $('#publishicon' + sourceid).attr('class') == "icon small red") {
+						$('#publishicon' + sourceid).attr('class', 'icon small green');	
+						$('#publishicon' + sourceid).attr('data-icon', 'c');
+						$('#publishicon' + sourceid).children().text('c');			
+					}
+					ct++;
+				}
+    		}
+    	}
+	});
+	
+}
+
+function fillModal()
+{
+	var cpmtotal = 0;
+	var vpmtotal = 0;
+	var ct = 0;
+	$('input').each(function(index) {
+    	if(($(this).attr('type') == "checkbox")) {
+    		if($(this).attr('checkboxsource') == "source") {
+				if($(this).is(':checked')) {
+					cpmtotal = cpmtotal + parseInt($(this).attr('cpm'));
+					vpmtotal = vpmtotal + parseInt($(this).attr('vpm'));
+					var sourceid = $(this).attr('sourceid');
+					$('#modal' + sourceid).show();
+					ct++;
+				}
+			}
+    	}
+	});
+	$('#publishvisits').text(vpmtotal);
+	$('#publishcost').text(cpmtotal + '$');
+}
+$('#onetlink1').click();
+$('#onetlink4').click();
+$('#onetlink6').click();
+updateTotals("init");
+$('#' + firstjoblink).click();
+
+
+function togglecheck(ele)
+{
+	if($(ele).is(':checked')) {
+		$(ele).removeAttr('checked');
+	} else {
+		$(ele).attr('checked', 'yes');
+	}
+}
+
+
+function loadBulkValues(onetdesc, onetcode, jobid)
+{
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				
+				var jsonresp = eval('(' + ajaxRequest.responseText + ')');
+				
+				var i = 1;
+				for(i = 1; i < {{noofsites}};i++) {
+					var color = 'red';
+					if(jsonresp[i]['vpm'] > 500) {
+						color = 'darkgreen';
+					}
+					else if(jsonresp[i]['vpm'] > 200) {
+						color = 'darkorange';
+					}
+					
+					var txt = jsonresp[i]['vpm'];
+					//$('#tdvpm' + jsonresp[i]['sourceid']).attr('value', txt);
+					$('#vpm' + jsonresp[i]['sourceid']).attr('style','color:' + color + ';');	
+					$('#vpm' + jsonresp[i]['sourceid']).text(txt);
+					$('#checkbox' + jsonresp[i]['sourceid']).attr('vpm',txt);
+					if(jsonresp[i]['ourcpm'] > 0) {
+						$('#checkbox' + jsonresp[i]['sourceid']).removeAttr('checked');
+					}
+					else {
+						$('#checkbox' + jsonresp[i]['sourceid']).attr('checked','yes');
+					}
+					
+				}
+				$('#jobtitle').text(onetdesc);
+				$('#location').text('');
+				
+				$("#expsort").click();
+				setTimeout('$("#expsort").click();',0);
+				//$("#expsort").click();
+			}
+		}
+		var onetlist = new Array();
+		$('li[litype*="onet"]').each(function(index) {
+			if( $(this).hasClass('current') ) {
+				onetlist.push($(this).attr('onetcode'));
+				
+			}
+		});
+		
+	
+		ajaxRequest.open("GET", '/getsitebulkvalues/' + onetlist.join('|') + '/' + jobid, false); 
+		ajaxRequest.send(null); 
+
+}
+
+
+
+function loadValues(jobid, plan, damping, title, location)
+{
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				
+				var jsonresp = eval('(' + ajaxRequest.responseText + ')');
+				
+				var i = 1;
+				for(i = 1; i < {{noofsites}};i++) {
+					var color = 'red';
+					if(jsonresp[i]['vpm'] > 500) {
+						color = 'darkgreen';
+					}
+					else if(jsonresp[i]['vpm'] > 200) {
+						color = 'darkorange';
+					}
+					
+					var txt = jsonresp[i]['vpm'];
+					//$('#tdvpm' + jsonresp[i]['sourceid']).attr('value', txt);
+					$('#vpm' + jsonresp[i]['sourceid']).attr('style','color:' + color + ';');	
+					$('#vpm' + jsonresp[i]['sourceid']).text(txt);
+					$('#checkbox' + jsonresp[i]['sourceid']).attr('vpm',txt);
+					if(jsonresp[i]['ourcpm'] > 0) {
+						$('#checkbox' + jsonresp[i]['sourceid']).removeAttr('checked');
+					}
+					else {
+						$('#checkbox' + jsonresp[i]['sourceid']).attr('checked','yes');
+					}
+					
+				}
+				$('#jobtitle').text(title);
+				$('#location').text(location);
+				
+				$("#expsort").click();
+				setTimeout('$("#expsort").click();',0);
+				//$("#expsort").click();
+			}
+		}
+		ajaxRequest.open("GET", '/getsitevalues/rating' + plan + '/' + damping, false); 
+		ajaxRequest.send(null); 
+
+}
+
+
+</script>
