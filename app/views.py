@@ -17,7 +17,9 @@ APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
 
 
-
+@route('/bootstrap/<dir1>/<dir2>/:filename')
+def serve_static(dir1, dir2, filename):
+    return static_file(dir1 + '/' + dir2 + '/' + filename, root='./bootstrap/docs/')
     
 @route('/HTML-KickStart/<dir1>/:filename')
 def serve_static(dir1, filename):

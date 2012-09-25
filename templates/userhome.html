@@ -31,8 +31,8 @@
 				<li litype="job" id="li{{job['jobid']}}">
 					<a id="joblink{{job['jobid']}}" href="#" onclick="$('li[litype*=&quot;job&quot;]').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');fillJobSummary('{{job['title']}}', '{{job['city']}}, {{job['state']}}', 'Simply Hired');
 		fillPerformanceSummary(400 * {{job['damping']}},300 * {{job['damping']}},40 * {{job['damping']}},'SimplyHired',25 * {{job['damping']}});
-		drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Other',400 * {{job['damping']}}]]]);
-		drawClickBarChart([['Free', parseInt(300 * {{job['damping']}})],['Paid', parseInt(100 * {{job['damping']}})]]);"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a>
+		drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Other',400 * {{job['damping']}}]]], 'inside',2,'n', 'chartdiv');
+		drawClickBarChart([['Free', parseInt(300 * {{job['damping']}})],['Paid', parseInt(100 * {{job['damping']}})]], 'clickbarchartdiv');drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Ladders',80 * {{job['damping']}}], ['Reddit',40 * {{job['damping']}}], ['Dice',90 * {{job['damping']}}], ['TweetMyJobs',30 * {{job['damping']}}], ['Other',160 * {{job['damping']}}]]], 'inside',3, 'n', 'perfdetaileddistdiv');drawTrendChart([[11, 9, 5, 12, 14],[4, 8, 5, 3, 6]], 'perftrendchartdiv');drawBarChart([['LinkedIn', parseInt(300 * {{job['damping']}})],['Facebook', parseInt(100 * {{job['damping']}})], ['Citibank', parseInt(150 * {{job['damping']}})], ['You', parseInt(340 * {{job['damping']}})], ['Others', parseInt(190 * {{job['damping']}})]], 'perfcompetechartdiv', 'Who else is hiring', ['#73C774', '#73C774', '#73C774', '#C7754C', '#73C774']);drawShareDataTable([['Linkedin',parseInt(100 * {{job['damping']}})],['Simplyhired',parseInt(200 * {{job['damping']}})],['Indeed',parseInt(190 * {{job['damping']}})], ['Ladders',parseInt(80 * {{job['damping']}})], ['Reddit',parseInt(40 * {{job['damping']}})], ['Dice',parseInt(90 * {{job['damping']}})], ['TweetMyJobs',parseInt(30 * {{job['damping']}})], ['Other',parseInt(160 * {{job['damping']}})]], 'perfdetaileddistdatadiv');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a>
 				</li>
 			</div>
 		{% endfor %}
@@ -133,9 +133,12 @@
 
 <div class="col_6">
 	<ul class="tabs left" >
-		<li><a href="#tabr3">Performance</a></li>
 		<li><a href="#tabr1">Campaign</a></li>
+		<li><a id="tabperf" href="#tabr3">Performance</a></li>
 		<li><a href="#tabr2">Edit/Sync Job</a></li>
+		
+		
+		
 	</ul>
 
 	<div id="tabr1" class="tab-content" style="background-color:white;">
@@ -146,7 +149,7 @@
 			<table style="width:70%;">
 				<tr>
 					<td width="40%">
-						<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits @minimum cost</span>
+						<span style="color:grey; font-weight:bold;">Target </span><span id="visits" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> visits</span>
 					</td>
 					<td width="60%">
 						<div id="slider-visits"></div>
@@ -154,7 +157,7 @@
 				</tr><tr>
 					<td width="40%">
 						<span style="color:grey; font-weight:bold;">Target </span>
-						<span style="color:#f6931f; font-weight:bold;">$</span><span id="cost" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> budget @maximum visits</span>
+						<span style="color:#f6931f; font-weight:bold;">$</span><span id="cost" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> budget</span>
 					</td>
 					<td width="60%">
 						<div id="slider-cost"></div>
@@ -227,7 +230,42 @@
 	</div>
 
 
-	<div id="tabr2" class="tab-content" style="background-color:white;">
+	<div id="tabr2" class="tab-content" style="background-color:white;padding:20px;">
+		<form name="jobedit" action="#" method="post">
+			<input type="text"  id="jobedittitle" name="jobedittitle" style="width:100%;margin-bottom:10px;min-height:30px;"  value="Lead Qualification Representative"/><br>
+			<table><tr>
+			<td width="34%"><span style="color:darkorange;">Location</span><input type="text"  id="jobeditloc" name="jobeditloc" style="width:100%;margin-bottom:10px;min-height:30px;"  value="Sunnyvale, CA"/></td>
+			<td width="33%"><span style="color:darkorange;"> Job Type</span>
+				
+				<select id="jobedittype" style="width:100%;margin-bottom:10px;min-height:30px;" >
+				<option value="0">Full Time</option>
+				<option value="1">Part Time</option>
+				<option value="2">Contract</option>
+				</select>
+			</td>
+			<td width="33%"><span style="color:darkorange;"> Industry</span><input type="text"  id="jobeditindustry" name="jobeditindustry" style="width:100%;margin-bottom:10px;min-height:30px;"  value="Computer Software"/></td>
+			</tr></table>
+			<span style="color:darkorange;"> Description</span>
+			<textarea id="jobeditdesc" wrap="hard" style="width:100%;margin-bottom:10px;min-height:500px;">
+			StumbleUpon is the easiest way to discover new and interesting things from across the Web. More than 25 million users turn to StumbleUpon to be informed, entertained and surprised by content and information recommended just for them. In addition, more than 75,000 brands, publishers and other marketers have used StumbleUpons Paid Discovery platform to promote their products and services. Explore more.
+
+Be a part of our engineering team to provide vital analytics to better understand user experience and recommendation efficiency while shaping the data driven product design and business decisions of the company.
+
+You will write MapReduce jobs to crunch data from huge tables in HBase and SQL-like queries executed by Hive on a large Hadoop cluster to create meaningful analytic data out of very large datasets. You will have the chance to design the next analytics platform of the hottest web discovery and personalized recommendations start-up. 
+
+Requirements:
+ Experience in working with very large datasets.
+ Programming skills in Java and PHP5.<
+ Strong SQL skills with ability to formulate queries on large datasets.
+ Hadoop or other comparable MapReduce experience.<BR><BR>Nice-to-Have's:<BR>    Startup experience.
+ Strong mathematical and statistical background.<BR>    Experience in working with HBase.
+ Experience in Hive or Cascading.
+ Proficiency in popular scripting languages like Python, Perl or Ruby.<
+ Proficiency in functional or object functional languages like Clojure or Scala.</textarea>
+			
+			
+			<button class="medium green" type="submit" style="width:70px;">Save|Sync</button>
+		</form>
 	</div>
 
 	<div id="tabr3" class="tab-content" style="background-color:white;">
@@ -236,32 +274,87 @@
 		<hr class="alt1" style="margin:0px 0;margin-bottom:20px;"></hr>
 		<div id="detailedperfreport" style="opacity:1.0;color:black;font-size:x-large;display:none;">See performance reports when you publish jobs</div>
 		<table cellspacing="0" cellpadding="0" class="striped tight">
+			<thead><tr>
+				<th style="color:grey;"></th>
+				<th style="color:grey;">Till date</th>
+				<th style="color:grey;">Total expected</th>
+				<th style="color:grey;">Progress</th>
+			</tr></thead>
 			<tbody><tr>
 				<td style="color:grey;">Clicks</td>
-				<td id="detailedtotalclicks" style="color:grey;">400</td>		
+				<td id="detailedclicks" style="color:grey;">400</td>
+				<td id="detailedtotalclicks" style="color:grey;">800</td>
+				<td style="color:grey;">
+					    <div class="progress" style="height:5px;margin:0px;">
+						<div class="bar bar-success" style="width: 50%;"></div>
+						<div class="bar bar-danger" style="width: 50%;"></div>
+						</div>
+				</td>
 				
 			</tr><tr>
 				<td style="color:grey;">Free Clicks</td>
 				<td id="detailedfreeclicks" style="color:grey;">300</td>
-				
+				<td id="detailedtotalfreeclicks" style="color:grey;">600</td>
+				<td style="color:grey;">
+					    <div class="progress" style="height:5px;margin:0px;">
+						<div class="bar bar-success" style="width: 50%;"></div>
+						<div class="bar bar-danger" style="width: 50%;"></div>
+						</div>
+				</td>
 				
 			</tr><tr>
 				<td style="color:grey;">Expected conversion</td>
 				<td id="detailedapplies" style="color:grey;">40 applies</td>		
-				
+				<td id="detailedtotalapplies" style="color:grey;">80 applies</td>
+				<td style="color:grey;">
+					    <div class="progress" style="height:5px;margin:0px;">
+						<div class="bar bar-success" style="width: 50%;"></div>
+						<div class="bar bar-danger" style="width: 50%;"></div>
+						</div>
+				</td>
 			</tr><tr>
 				<td style="color:grey;">Top source</td>
 				<td id="detailedtopsource" style="color:grey;">Simplyhired</td>
-				
+				<td  style="color:grey;"> - </td>
+				<td style="color:grey;">
+					    -
+				</td>
 			</tr><tr>
 				<td style="color:grey;">Money spent</td>
 				<td id="detailedmoneyspent" style="color:grey;">$25</td>
+				<td id="detailedtotalspent" style="color:grey;">$25</td>
+				<td style="color:grey;">
+					    <div class="progress" style="height:5px;margin:0px;">
+						<div class="bar bar-success" style="width: 100%;"></div>
+						<div class="bar bar-danger" style="width: 0%;"></div>
+						</div>
+				</td>
 			</tr></tbody>
 		</table>
 		
-	
-		<div id="chart1" style="width:90%;height:200px;"></div>
-		<div id="chart2" style="width:90%;height:200px;margin-top:20px;"></div>
+		<table><tbody><tr>
+			<td width="50%"><div id="perfdetaileddistdiv" style="width:100%;height:300px;margin-top:20px;"></div></td>
+			<td width="50%">
+				<div id="perfdetaileddistdatadiv" style="width:100%;height:300px;margin-top:20px;">
+					<table class="striped tight" style="width:100%;height:100%">
+						<tbody>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+							<tr><td tdtype="name"></td><td tdtype="value"></td></tr>
+						</tbody>
+					</table>
+			
+				</div>
+			</td>
+		</tr></tbody></table>
+		
+		<div id="perftrendchartdiv" style="width:90%;height:200px;margin-top: 20px;"></div>
+		<div id="perfcompetechartdiv" style="width:90%;height:250px;margin-top: 20px;"></div>
 	
 	
 	</div>

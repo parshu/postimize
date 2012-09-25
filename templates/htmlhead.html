@@ -21,18 +21,18 @@
 		 text-align:center;
 	}
 	</style>
-	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<link href="/dist/jquery-ui.css" rel="stylesheet" type="text/css"/>
 	{% if page != "home" %}
-		<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet"/>
-		<script src="http://twitter.github.com/bootstrap/assets/js/jquery.js"></script>
-		<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
-		<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+		<link href="/bootstrap/assets/css/bootstrap.css" rel="stylesheet"/>
+		<script src="/bootstrap/assets/js/jquery.js"></script>
+		<script src="/bootstrap/assets/js/bootstrap-transition.js"></script>
+		<script src="/bootstrap/assets/js/bootstrap-modal.js"></script>
 	{% endif %}
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/dist/jquery.min.js"></script>
+	<script src="/dist/jquery-ui.min.js"></script>
 	<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<script type="text/javascript" src="/HTML-KickStart/js/prettify.js"></script>                                   <!-- PRETTIFY -->
-	<script type="text/javascript" src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
+	<script type="text/javascript" src="/dist/spin.min.js"></script>
 	<script type="text/javascript" src="/HTML-KickStart/js/kickstart.js"></script>                                  <!-- KICKSTART -->
 	<link rel="stylesheet" type="text/css" href="/HTML-KickStart/css/kickstart.css" media="all" />                  <!-- KICKSTART -->
 	<link rel="stylesheet" type="text/css" href="/HTML-KickStart/style.css" media="all" />                          <!-- CUSTOM STYLES -->
@@ -43,11 +43,15 @@
 	<script type="text/javascript" src="/dist/plugins/jqplot.categoryAxisRenderer.min.js"></script>
 	<script type="text/javascript" src="/dist/plugins/jqplot.pointLabels.min.js"></script>
 	<script type="text/javascript" src="/dist/plugins/jqplot.pieRenderer.min.js"></script>
+	<script type="text/javascript" src="/dist/plugins/jqplot.highlighter.min.js"></script>
+	<script type="text/javascript" src="/dist/plugins/jqplot.canvasTextRenderer.min.js"></script>
+	<script type="text/javascript" src="/dist/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
 	<script>
 	function overlay() {
 		el = document.getElementById("overlay");
 		el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
 	}
+	
 	</script>
 
 </head>

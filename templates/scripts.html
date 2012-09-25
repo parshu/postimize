@@ -177,9 +177,23 @@ function fillPerformanceSummary(clicks, freeclicks, applies, topsource, moneyspe
 
 }
 
-function drawSharePieChart(data) {
-   $('#chartdiv').empty();
-   var plot1 = $.jqplot('chartdiv', data, {
+function drawShareDataTable(data, divname) {
+	var i = 0;
+	$('td').each(function(index) {
+    	if(($(this).attr('tdtype') == "name")) {
+    		$(this).text(data[i][0]);
+    	} 
+    	if(($(this).attr('tdtype') == "value")) {
+    		$(this).text(data[i][1]);
+    		i++;
+    	} 
+	});
+}
+
+var plot1;
+function drawSharePieChart(data, place, rows, loc, divname) {
+   $('#' + divname).empty();
+	plot1 = $.jqplot(divname, data, {
    		title:'Clicks by Source',
         gridPadding: {top:0, bottom:0, left:0, right:0},
         seriesDefaults:{
@@ -189,22 +203,52 @@ function drawSharePieChart(data) {
         },
         legend:{
             show:true,
-            placement: 'inside',
+            placement: place,
             rendererOptions: {
-                numberRows: 2
+                numberRows: rows
             },
-            location:'n',
+            location:loc,
             marginTop: '0px'
         }      
     });
+     $('#tabperf').bind('click', function(event, ui) {
+     	if ( plot2._drawCount === 0) {
+        	setTimeout('plot1.replot()',50);
+        }
+      
+    });
        
 }
+var plot1b;
+function drawTrendChart(data, divname) {	
+  	$('#' + divname).empty();
+    plot1b = $.jqplot(divname ,data,{
+       stackSeries: true,
+       showMarker: false,
+       seriesDefaults: {
+           fill: true
+       },
+       axes: {
+           xaxis: {
+               renderer: $.jqplot.CategoryAxisRenderer,
+               ticks: ["Mon", "Tue", "Wed", "Thr", "Fri"]
+           }
+       }
+    });
 
-function drawClickBarChart(data) {
+    $('#tabperf').bind('click', function(event, ui) {
+    	if ( plot2._drawCount === 0) {
+        	setTimeout('plot1b.replot()',50);
+        }
+      
+    });
+  
+}
+
+function drawClickBarChart(data, divname) {
   var line1 = data;
- 	 $('#clickbarchartdiv').empty();
-    $('#clickbarchartdiv').jqplot([line1], {
-        title:'Clicks by $',
+ 	 $('#' + divname).empty();
+    $('#' + divname).jqplot([line1], {
         seriesDefaults:{
         	pointLabels: { show: true },
             renderer:$.jqplot.BarRenderer,
@@ -219,6 +263,38 @@ function drawClickBarChart(data) {
                 renderer: $.jqplot.CategoryAxisRenderer
             }
         }
+    });
+  
+       
+}
+
+var plot2;
+function drawBarChart(data, divname, bartitle, colors) {
+  var line1 = data;
+ 	 $('#' + divname).empty();
+ 	 plot2 = $.jqplot(divname ,[data],{
+       seriesColors:colors,
+        seriesDefaults:{
+        	pointLabels: { show: true },
+            renderer:$.jqplot.BarRenderer,
+            rendererOptions: {
+                // Set varyBarColor to tru to use the custom colors on the bars.
+                varyBarColor: true
+            }
+        },
+        axes:{
+            xaxis:{
+                renderer: $.jqplot.CategoryAxisRenderer
+            }
+        }
+    });
+    
+  
+     $('#tabperf').bind('click', function(event, ui) {
+     	if ( plot2._drawCount === 0) {
+        	setTimeout('plot2.replot()',50);
+        }
+      
     });
   
        
