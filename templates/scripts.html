@@ -36,7 +36,7 @@ var firstjoblink = "";
 		if(firstjoblink == "") {
 			firstjoblink = "joblink{{job['jobid']}}";
 		}
-		$("#{{job['jobid']}}").delay(delaytime * ctdelay).fadeIn();
+		$("#{{job['jobid']}}").delay(delaytime * ctdelay).show();
 		stopdelay = ctdelay;
 		ctdelay++;
 	}
@@ -99,7 +99,7 @@ $( "#slider-visits" ).slider({
 			//alert('check' + pricylist[i]);
 		}
 		updateTotals('visits');
-		execURL('/log/{"time": "now", "action":"slide", "element":"visitsslider", "detail":"' + sliderval + '", "user":"{{user}}}"',true);
+		execURL('/log/{"time": "now", "action":"slide", "element":"visitsslider", "detail":"' + sliderval + '", "user":"{{user}}"',true);
 	}
 });
 $( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
@@ -155,7 +155,7 @@ $( "#slider-cost" ).slider({
 			//alert('check' + pricylist[i]);
 		}
 		updateTotals('cost');
-		execURL('/log/{"time": "now", "action":"slide", "element":"costslider", "detail":"' + sliderval + '", "user":"{{user}}}"}',true);
+		execURL('/log/{"time": "now", "action":"slide", "element":"costslider", "detail":"' + sliderval + '", "user":"{{user}}"}',true);
 	}
 });
 $( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
@@ -406,7 +406,7 @@ function fillModal()
 	});
 	$('#publishvisits').text(vpmtotal);
 	$('#publishcost').text(cpmtotal + '$');
-	execURL('/log/{"time": "now", "action":"publish", "element":"publishbutton", "detail":"publishbutton", "user":"{{user}}}"}',true);
+	execURL('/log/{"time": "now", "action":"publish", "element":"publishbutton", "detail":"publishbutton", "user":"{{user}}"}',true);
 }
 
 function clickDefaultOnets() {
@@ -419,9 +419,8 @@ $('#onetlink6').click();
 
 	clickDefaultOnets();
 
-updateTotals("init");
+//updateTotals("init");
 $('#' + firstjoblink).click();
-
 
 function togglecheck(ele)
 {

@@ -1,0 +1,26 @@
+{% block content %}
+  
+<!DOCTYPE html>
+<html>
+
+{% include "htmlhead.html" %}
+
+<body>
+<table class="striped">
+{% for user in users.keys() %}
+<tr>
+<td>{{user}}</td>
+{% for actions in users[user].keys() %}
+<td>
+{{actions}}:{{users[user][actions]}}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+
+</table>
+</body>
+
+</html>
+
+{% endblock %}

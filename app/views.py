@@ -80,6 +80,24 @@ def getsitevalues(plan, damping):
 		i = i + 1
 	return jobsiteshash
 	
+@route('/metrics')
+def metrics():
+	logtable = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['log']
+	logs = []
+	logs.extend([log for log in logtable.find()])
+	users = {}
+	for log in logs:
+		if(users.has_key(log['user'])):
+			if(users[log['user']].has_key(log['action'])):
+				users[log['user']][log['action']] = users[log['user']][log['action']] + 1
+			else:
+				users[log['user']][log['action']] = 1
+		else:
+			users[log['user']] = {log['action']: 1}
+	
+	
+	return template('metrics.html',users = users)
+	
 @route('/getsitebulkvalues/<onetcode>/<jobid>')
 def getsitebulkvalues(onetcode, jobid):
 	onetcodes = onetcode.split("|")
