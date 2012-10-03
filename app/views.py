@@ -8,10 +8,12 @@ import urllib
 import urllib2
 import sys
 import json
+import datetime
 TEMPLATE_PATH.append('./templates')
 
 APP_CONFIG = {}
 APP_CONFIG["DBNAME"] = "gigzibit"
+APP_CONFIG["LOGTABLE"] = "log"
 APP_CONFIG["THUMBNAIL_COLOR"] = "#FEFEFE"
 APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
@@ -51,6 +53,17 @@ def serve_static(dir1, filename):
 def hello_world():
     return template('home.html', APP_CONFIG = APP_CONFIG, page = "home")
     
+
+@route('/log/<jsonlog>')
+def logger(jsonlog):
+	print jsonlog
+	sys.stdout.flush()
+	logobj = json.loads(jsonlog)
+	logobj['time'] = datetime.datetime.utcnow()
+	print "LOG: " + str(logobj)
+	sys.stdout.flush()
+	table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]][APP_CONFIG["LOGTABLE"]]
+	table.insert(logobj)
 
 @route('/getsitevalues/<plan>/<damping>')
 def getsitevalues(plan, damping):
@@ -98,7 +111,10 @@ def scan():
 	POST_REQUEST = request.GET
 	demojobs_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['demojobs']
 	demojobs = []
-	demojobs.extend([job for job in demojobs_table.find()])
+	if(POST_REQUEST['requesttype'] == 'all'):
+		demojobs.extend([job for job in demojobs_table.find()])
+	else:
+		demojobs.extend([job for job in demojobs_table.find({'demotype':POST_REQUEST['requesttype']})])
 	jobsites_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['jobsites']
 	jobsites = []
 	jobsites.extend([job for job in jobsites_table.find().sort("vpm", pymongo.DESCENDING)])
@@ -117,7 +133,7 @@ def scan():
 		jobsbycompany[job['company']].append(job)
 	for onet in jobsbyonet.keys():
 		onetcounts[onet] = len(jobsbyonet[onet])
-	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], page = "scan", jobsbycompany = jobsbycompany, jobsbyonet = jobsbyonet, onetcounts = onetcounts, onetdesctocode = onetdesctocode)
+	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], user = POST_REQUEST['user'], page = "scan", jobsbycompany = jobsbycompany, jobsbyonet = jobsbyonet, onetcounts = onetcounts, onetdesctocode = onetdesctocode)
 
 @route('/test')
 def test():

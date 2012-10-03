@@ -40,7 +40,7 @@ var firstjoblink = "";
 		stopdelay = ctdelay;
 		ctdelay++;
 	}
-setTimeout("$('#tabl2').show()",delaytime * ctdelay);
+//setTimeout("$('#tabl2').show()",delaytime * 25);
 
 {% endfor %}
 
@@ -99,6 +99,7 @@ $( "#slider-visits" ).slider({
 			//alert('check' + pricylist[i]);
 		}
 		updateTotals('visits');
+		execURL('/log/{"time": "now", "action":"slide", "element":"visitsslider", "detail":"' + sliderval + '", "user":"{{user}}}"',true);
 	}
 });
 $( "#visits" ).text( $( "#slider-visits" ).slider( "value" ) );
@@ -154,6 +155,7 @@ $( "#slider-cost" ).slider({
 			//alert('check' + pricylist[i]);
 		}
 		updateTotals('cost');
+		execURL('/log/{"time": "now", "action":"slide", "element":"costslider", "detail":"' + sliderval + '", "user":"{{user}}}"}',true);
 	}
 });
 $( "#cost" ).text( $( "#slider-cost" ).slider( "value" ) );
@@ -167,6 +169,38 @@ function fillJobSummary(title, location, company) {
 	
 
 }
+
+function getCurrentDateTime() {
+		var date = new Date();
+		var datestr = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay() + "|" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();  
+		return(date);
+	
+}
+
+function execURL(url, asynchronous){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		
+		ajaxRequest.open("GET", url, asynchronous); 
+		ajaxRequest.send(null); 
+		
+	}
 
 function fillPerformanceSummary(clicks, freeclicks, applies, topsource, moneyspent) {
 	$('#summarytotalclicks').text(parseInt(clicks));
@@ -372,10 +406,19 @@ function fillModal()
 	});
 	$('#publishvisits').text(vpmtotal);
 	$('#publishcost').text(cpmtotal + '$');
+	execURL('/log/{"time": "now", "action":"publish", "element":"publishbutton", "detail":"publishbutton", "user":"{{user}}}"}',true);
 }
+
+function clickDefaultOnets() {
 $('#onetlink1').click();
 $('#onetlink4').click();
-$('#onetlink6').click();
+$('#onetlink6').click();	
+	
+}
+
+
+	clickDefaultOnets();
+
 updateTotals("init");
 $('#' + firstjoblink).click();
 
@@ -441,6 +484,7 @@ function loadBulkValues(onetdesc, onetcode, jobid)
 				}
 				$('#jobtitle').text(onetdesc);
 				$('#location').text('');
+				$('#jobexplain').text('');
 				
 				$("#expsort").click();
 				setTimeout('$("#expsort").click();',0);
@@ -514,6 +558,7 @@ function loadValues(jobid, plan, damping, title, location)
 				}
 				$('#jobtitle').text(title);
 				$('#location').text(location);
+				$('#jobexplain').text(' job in ');
 				
 				$("#expsort").click();
 				setTimeout('$("#expsort").click();',0);

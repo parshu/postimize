@@ -2,11 +2,11 @@
 <!-- ===================================== START HEADER ===================================== -->
 
 <div>
-	<div style="color:white;background-color:brown;position:absolute;padding:15px 15px 20px;margin-left:50px;font-size:xx-large;">postimize</div>
+	<div style="cursor:pointer;color:white;background-color:brown;position:absolute;padding:15px 15px 20px;margin-left:50px;font-size:xx-large;" onclick="location.href='/';">postimize</div>
 	<div style="padding-left:60px;background-color: {{APP_CONFIG['NAV_COLOR']}};border-top:5px solid #80BCA3;height:40px;">  	
 		<div style="padding-top:10px;">
-			<span style="margin-left:160px;font-size:large;color:grey;">Job Advertising & Campaign Optimization  Platform</span>
-			<a href="#" style="float:right;padding-right:20px;">Log In</a>
+			<span style="margin-left:160px;font-size:large;color:grey;">One Click Recruitment Advertising</span>
+			<span style="float:right;padding-right:20px;"><a href="/" onclick="execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;homeview&quot;, &quot;element&quot;:&quot;homelink&quot;, &quot;detail&quot;:&quot;homelink&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">Home</a> | <a href="#youtubemodal" style="color:red;" data-toggle="modal" onclick="execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;videoview&quot;, &quot;element&quot;:&quot;headervideolink&quot;, &quot;detail&quot;:&quot;headervideolink&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">5 min video walkthrough</a> | <a href="#">Log In</a></span>
 		</div>	
 	</div>
 </div>

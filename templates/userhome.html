@@ -16,11 +16,11 @@
 <div id="clickedjobinfo"></div>
 
 <div id="foo" class="col_3">
-	<button class="large green"  style="width:100%;margin-bottom:10px;">Import More Jobs</button>
+	<!--<button class="large green"  style="width:100%;margin-bottom:10px;">Import More Jobs</button>-->
 	<ul class="tabs" >
-		<li><a href="#tabl1" onclick="$('#jobsbyonetdiv').hide();$('#jobdescdiv').show();">By Job</a></li>
-		<li><a href="#tabl2" onclick="$('#jobsbyonetdiv').show();$('#jobdescdiv').hide();loadBulkValues('selected categories','111','-1');updateTotals('init');">By Category</a></li>
-		<li><a href="#tabl3">By Company</a></li>
+		<li><a href="#tabl1" onclick="$('#jobsbyonetdiv').hide();$('#jobdescdiv').show();execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;jobtab&quot;, &quot;detail&quot;:&quot;jobtab&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">Optimize By Job</a></li>
+		<li><a href="#tabl2" onclick="$('#jobsbyonetdiv').show();$('#jobdescdiv').hide();loadBulkValues('selected categories','111','-1');updateTotals('init');execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;categorytab&quot;, &quot;detail&quot;:&quot;categorytab&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">Bulk Optimize</a></li>
+		<!--<li><a href="#tabl3">By Company</a></li>-->
 	</ul>
 
 	<div id="tabl1" class="tab-content" style="margin:0px;padding:0px;">
@@ -29,10 +29,10 @@
 		{% for job in demojobs %}
 			<div id="{{job['jobid']}}" style="display:none;background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};">
 				<li litype="job" id="li{{job['jobid']}}">
-					<a id="joblink{{job['jobid']}}" href="#" onclick="$('li[litype*=&quot;job&quot;]').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');fillJobSummary('{{job['title']}}', '{{job['city']}}, {{job['state']}}', 'Simply Hired');
+					<a id="joblink{{job['jobid']}}" href="#" onclick="$('li[litype*=&quot;job&quot;]').attr('class','current').removeClass();$('#li{{job['jobid']}}').addClass('current');fillJobSummary('{{job['title']}}', '{{job['city']}}, {{job['state']}}', 'Simply Hired');loadValues('{{job['jobid']}}','{{job['plan']}}','{{job['damping']}}','{{job['title']}}','{{job['city']}}, {{job['state']}}');updateTotals('init');
 		fillPerformanceSummary(400 * {{job['damping']}},300 * {{job['damping']}},40 * {{job['damping']}},'SimplyHired',25 * {{job['damping']}});
 		drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Other',400 * {{job['damping']}}]]], 'inside',2,'n', 'chartdiv');
-		drawClickBarChart([['Free', parseInt(300 * {{job['damping']}})],['Paid', parseInt(100 * {{job['damping']}})]], 'clickbarchartdiv');drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Ladders',80 * {{job['damping']}}], ['Reddit',40 * {{job['damping']}}], ['Dice',90 * {{job['damping']}}], ['TweetMyJobs',30 * {{job['damping']}}], ['Other',160 * {{job['damping']}}]]], 'inside',3, 'n', 'perfdetaileddistdiv');drawTrendChart([[11, 9, 5, 12, 14],[4, 8, 5, 3, 6]], 'perftrendchartdiv');drawBarChart([['LinkedIn', parseInt(300 * {{job['damping']}})],['Facebook', parseInt(100 * {{job['damping']}})], ['Citibank', parseInt(150 * {{job['damping']}})], ['You', parseInt(340 * {{job['damping']}})], ['Others', parseInt(190 * {{job['damping']}})]], 'perfcompetechartdiv', 'Who else is hiring', ['#73C774', '#73C774', '#73C774', '#C7754C', '#73C774']);drawShareDataTable([['Linkedin',parseInt(100 * {{job['damping']}})],['Simplyhired',parseInt(200 * {{job['damping']}})],['Indeed',parseInt(190 * {{job['damping']}})], ['Ladders',parseInt(80 * {{job['damping']}})], ['Reddit',parseInt(40 * {{job['damping']}})], ['Dice',parseInt(90 * {{job['damping']}})], ['TweetMyJobs',parseInt(30 * {{job['damping']}})], ['Other',parseInt(160 * {{job['damping']}})]], 'perfdetaileddistdatadiv');"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a>
+		drawClickBarChart([['Free', parseInt(300 * {{job['damping']}})],['Paid', parseInt(100 * {{job['damping']}})]], 'clickbarchartdiv');drawSharePieChart([[['Linkedin',100 * {{job['damping']}}],['Simplyhired',200 * {{job['damping']}}],['Indeed',190 * {{job['damping']}}], ['Ladders',80 * {{job['damping']}}], ['Reddit',40 * {{job['damping']}}], ['Dice',90 * {{job['damping']}}], ['TweetMyJobs',30 * {{job['damping']}}], ['Other',160 * {{job['damping']}}]]], 'inside',3, 'n', 'perfdetaileddistdiv');drawTrendChart([[11, 9, 5, 12, 14],[4, 8, 5, 3, 6]], 'perftrendchartdiv');drawBarChart([['LinkedIn', parseInt(300 * {{job['damping']}})],['Facebook', parseInt(100 * {{job['damping']}})], ['Citibank', parseInt(150 * {{job['damping']}})], ['You', parseInt(340 * {{job['damping']}})], ['Others', parseInt(190 * {{job['damping']}})]], 'perfcompetechartdiv', 'Who else is hiring', ['#73C774', '#73C774', '#73C774', '#C7754C', '#73C774']);drawShareDataTable([['Linkedin',parseInt(100 * {{job['damping']}})],['Simplyhired',parseInt(200 * {{job['damping']}})],['Indeed',parseInt(190 * {{job['damping']}})], ['Ladders',parseInt(80 * {{job['damping']}})], ['Reddit',parseInt(40 * {{job['damping']}})], ['Dice',parseInt(90 * {{job['damping']}})], ['TweetMyJobs',parseInt(30 * {{job['damping']}})], ['Other',parseInt(160 * {{job['damping']}})]], 'perfdetaileddistdatadiv');execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;job&quot;, &quot;detail&quot;:&quot;{{job['title']}}&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);"><img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a>
 				</li>
 			</div>
 		{% endfor %}
@@ -45,7 +45,7 @@
 		{% for onet in jobsbyonet.keys() %}
 			<div id="onet{{loop.index}}" style="background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};">
 				<li litype="onet" onetcode="{{onetdesctocode[onet]}}" id="onetli{{loop.index}}">
-					<a id="onetlink{{loop.index}}" href="#" onclick="$('#onetli{{loop.index}}').toggleClass('current');togglecheck('#onetcheckbox{{loop.index}}');$('#onetdiv{{loop.index}}').toggle();loadBulkValues('{{onet}}','{{onetdesctocode[onet]}}','-1');updateTotals('init');"><input type="checkbox" checkboxsource="onet" autocomplete="off" onclick="" id="onetcheckbox{{loop.index}}"/>&nbsp;&nbsp;<span>{{onet}}</span><span style="float:right;color:darkorange;">{{onetcounts[onet]}}</span></a>
+					<a id="onetlink{{loop.index}}" href="#" onclick="$('#onetli{{loop.index}}').toggleClass('current');togglecheck('#onetcheckbox{{loop.index}}');$('#onetdiv{{loop.index}}').toggle();loadBulkValues('{{onet}}','{{onetdesctocode[onet]}}','-1');updateTotals('init');execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;onet&quot;, &quot;detail&quot;:&quot;{{onet}}&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);"><input type="checkbox" checkboxsource="onet" autocomplete="off" onclick="" id="onetcheckbox{{loop.index}}"/>&nbsp;&nbsp;<span>{{onet}}</span><span style="float:right;color:darkorange;">{{onetcounts[onet]}}</span></a>
 				</li>
 			</div>
 		{% endfor %}
@@ -57,7 +57,7 @@
 
 </div>
 
-<div id="jobsbyonetdiv" class="col_3" style="display:none;">
+<div id="jobsbyonetdiv" class="col_3" style="display:none;padding-top:20px;">
 	{% for onet in jobsbyonet.keys() %}
 	<div id="onetdiv{{loop.index}}" style="display:none;">
 		<ul class="menu vertical">
@@ -65,7 +65,7 @@
 		{% for job in jobsbyonet[onet] %}
 			<div id="ojob{{job['jobid']}}" style="background-color:{{loop.cycle('#F0F0F0', '#FCFCFC')}};">
 				<li id="ojobli{{job['jobid']}}">
-					<a id="ojoblink{{job['jobid']}}" href="#"><input type="checkbox" checkboxsource="onetjob" autocomplete="off" onclick="" id="ojobcheckbox{{job['jobid']}}" checked="yes"/>&nbsp;&nbsp;<img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a>
+					<a id="ojoblink{{job['jobid']}}" href="#"><input type="checkbox" checkboxsource="onetjob" autocomplete="off" onclick="execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;jobbyonet&quot;, &quot;detail&quot;:&quot;{{job['title']}}&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);" id="ojobcheckbox{{job['jobid']}}" checked="yes"/>&nbsp;&nbsp;<img src="{{job['loo']}}" width="15px" height="15px"></img>&nbsp;&nbsp;<span>{{job['title']}}</span></a>
 				</li>
 			</div>
 		{% endfor %}
@@ -77,9 +77,9 @@
 </div>
 
 
-<div id="jobdescdiv" class="col_3" style="padding:0px;margin:0px;" >
+<div id="jobdescdiv" class="col_3" style="padding:0px;margin:0px;padding-top:20px;" >
 	<div style="background-color:white;padding:10px;">
-		<span style="color:grey; font-weight:bold;">Job Summary</span><a href="#" style="float:right;font-size:small;">View|Edit|Sync</a>
+		<span style="color:grey; font-weight:bold;">Job Summary</span><a href="#" onclick="$('#tabedit').click();execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;tabeditsum&quot;, &quot;detail&quot;:&quot;tabeditsum&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);" style="float:right;font-size:small;">View|Edit|Sync</a>
 		<hr class="alt1" style="margin:0px 0;margin-bottom:20px;"></hr>
 		<table cellspacing="0" cellpadding="0" class="striped tight">
 			<tbody>
@@ -95,10 +95,10 @@
 		</table>
 	</div>
 	
-	<div id="performancesummarydiv" style="background-color:white;padding:10px;margin-top:20px;opacity:1.0;">
-		<span style="color:grey; font-weight:bold;">Performance Summary</span><a href="#" style="float:right;font-size:small;">Full Report</a>
+	<div id="performancesummarydiv" style="background-color:white;padding:10px;margin-top:20px;opacity:{% if demotype != 'all' %}0.4{% else %}1.0{% endif %};">
+		<span style="color:grey; font-weight:bold;">Performance Summary</span><a href="#" onclick="execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;tabperformancesum&quot;, &quot;detail&quot;:&quot;tabperformancesum&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);$('#tabperf').click();" style="float:right;font-size:small;">Full Report</a>
 		<hr class="alt1" style="margin:0px 0;margin-bottom:20px;"></hr>
-		<div style="opacity:1.0;color:black;font-size:x-large;display:none;">See performance reports when you publish jobs</div>
+		<div style="opacity:1.0;color:red;font-size:large;font-weight:bold;position:absolute;top:40%;width:20%;-webkit-transform: rotate(330deg);-moz-transform: rotate(330deg);-o-transform: rotate(330deg);writing-mode: lr-tb;{% if demotype == 'all' %}display:none;{% endif %}"><center></center>See performance reports when you publish jobs</center></div>
 		<table cellspacing="0" cellpadding="0" class="striped tight">
 			<tbody><tr>
 				<td style="color:grey;">Clicks</td>
@@ -133,9 +133,9 @@
 
 <div class="col_6">
 	<ul class="tabs left" >
-		<li><a href="#tabr1">Campaign</a></li>
-		<li><a id="tabperf" href="#tabr3">Performance</a></li>
-		<li><a href="#tabr2">Edit/Sync Job</a></li>
+		<li><a id="tabcampaign" href="#tabr1" onclick="execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;campaigntab&quot;, &quot;detail&quot;:&quot;campaigntab&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">Campaign</a></li>
+		<li><a id="tabperf" href="#tabr3" onclick="{% if demotype != 'all' %}$('#perfmessage').show();{% endif %}execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;performancetab&quot;, &quot;detail&quot;:&quot;performancetab&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">Performance</a></li>
+		<li><a id="tabedit" href="#tabr2" onclick="execURL('/log/{&quot;time&quot;: &quot;now&quot;, &quot;action&quot;:&quot;click&quot;, &quot;element&quot;:&quot;edittab&quot;, &quot;detail&quot;:&quot;edittab&quot;, &quot;user&quot;:&quot;{{user}}&quot;}',true);">Edit/Sync Job</a></li>
 		
 		
 		
@@ -143,7 +143,7 @@
 
 	<div id="tabr1" class="tab-content" style="background-color:white;">
 
-		<span style="color:grey; font-weight:bold;">You optimized publish plan for a </span><span id="jobtitle" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;"> job in </span><span id="location" style="color:#f6931f; font-weight:bold;"></span>
+		<span style="color:grey; font-weight:bold;">Optimized publish plan for </span><span id="jobtitle" style="color:#f6931f; font-weight:bold;"></span><span style="color:grey; font-weight:bold;" id="jobexplain"> job in </span><span id="location" style="color:#f6931f; font-weight:bold;"></span>
 		<hr class="alt1" style="margin:0px 0;margin-bottom:20px;"></hr>
 		<div style="background-color:#DDEDE6;">
 			<table style="width:70%;">
@@ -268,11 +268,11 @@ Requirements:
 		</form>
 	</div>
 
-	<div id="tabr3" class="tab-content" style="background-color:white;">
+	<div id="tabr3" class="tab-content" style="background-color:white;opacity:{% if demotype != 'all' %}0.4{% else %}1.0{% endif %};">
 	
 		<span style="color:grey; font-weight:bold;">Detailed Performance Report</span>
 		<hr class="alt1" style="margin:0px 0;margin-bottom:20px;"></hr>
-		<div id="detailedperfreport" style="opacity:1.0;color:black;font-size:x-large;display:none;">See performance reports when you publish jobs</div>
+		<div id="perfmessage" style="opacity:1.0;color:red;font-size:large;font-weight:bold;position:absolute;top:30%;width:20%;-webkit-transform: rotate(330deg);-moz-transform: rotate(330deg);-o-transform: rotate(330deg);writing-mode: lr-tb;display:none;"><center></center>See performance reports when you publish jobs</center></div>
 		<table cellspacing="0" cellpadding="0" class="striped tight">
 			<thead><tr>
 				<th style="color:grey;"></th>
@@ -333,7 +333,7 @@ Requirements:
 		</table>
 		
 		<table><tbody><tr>
-			<td width="50%"><div id="perfdetaileddistdiv" style="width:100%;height:300px;margin-top:20px;"></div></td>
+			<td width="50%"><div id="perfdetaileddistdiv" style="width:100%;height:300px;margin-top:20px;">Loading chart...</div></td>
 			<td width="50%">
 				<div id="perfdetaileddistdatadiv" style="width:100%;height:300px;margin-top:20px;">
 					<table class="striped tight" style="width:100%;height:100%">
@@ -353,8 +353,8 @@ Requirements:
 			</td>
 		</tr></tbody></table>
 		
-		<div id="perftrendchartdiv" style="width:90%;height:200px;margin-top: 20px;"></div>
-		<div id="perfcompetechartdiv" style="width:90%;height:250px;margin-top: 20px;"></div>
+		<div id="perftrendchartdiv" style="width:90%;height:200px;margin-top: 20px;">Loading chart...</div>
+		<div id="perfcompetechartdiv" style="width:90%;height:250px;margin-top: 20px;">Loading chart...</div>
 	
 	
 	</div>
