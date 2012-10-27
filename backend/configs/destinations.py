@@ -56,6 +56,19 @@ CONFIG = {
 						},
 					"type": "form"
 
+				},
+				{
+					"url": "",
+					"formname": "",
+					"formindex":0,
+					"inputs": {
+							0 : "[title]",
+							1 : "[location]",
+							3 : "[description]",
+							4 : "[compensation]"
+						},
+					"type": "form"
+
 				}
 				
 

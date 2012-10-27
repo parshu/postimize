@@ -43,7 +43,15 @@ def autoPost(API_REQUEST):
 						if(step.has_key("inputs")):
 							for input in step["inputs"].keys():
 								if( type(input) == int):
-									br.find_control(nr=input).get(step["inputs"][input]).selected = True
+									if(step["inputs"][input][0] == '['):
+										field = step["inputs"][input].replace("[","")
+										field = field.replace("]","")
+										br.set_value(API_REQUEST[field], kind="text", nr=input)
+										
+									else:
+										br.find_control(nr=input).get(step["inputs"][input]).selected = True
+									
+										
 								else:
 									br[input] = step["inputs"][input]
 						response = br.submit()
