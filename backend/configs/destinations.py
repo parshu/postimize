@@ -12,9 +12,25 @@ CONFIG = {
 							"inputEmailHandle": "username",
 							"inputPassword": "password"
 						},
-					"type": "submit"
+					"type": "form"
+
+				},
+				{
+					"url": "https://post.craigslist.org",
+					"type": "newlink"
+
+				},
+				{
+					"url": "",
+					"formname": "",
+					"formindex":0,
+					"inputs": {
+							0 : "128"
+						},
+					"type": "form"
 
 				}
+				
 
 
 			]
