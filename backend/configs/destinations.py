@@ -69,6 +69,13 @@ CONFIG = {
 						},
 					"type": "form"
 
+				},
+				{
+					"url": "",
+					"formname": "",
+					"formindex":0,
+					"type": "form"
+
 				}
 				
 
