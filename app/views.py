@@ -10,7 +10,9 @@ import sys
 import json
 import datetime
 TEMPLATE_PATH.append('./templates')
-
+sys.path.append('./backend/configs')
+sys.path.append('./backend')
+import apilib
 APP_CONFIG = {}
 APP_CONFIG["DBNAME"] = "gigzibit"
 APP_CONFIG["LOGTABLE"] = "log"
@@ -152,6 +154,12 @@ def scan():
 	for onet in jobsbyonet.keys():
 		onetcounts[onet] = len(jobsbyonet[onet])
 	return template('userhome.html', POST_REQUEST = POST_REQUEST, APP_CONFIG = APP_CONFIG, demojobs = demojobs, jobsites = jobsites, noofsites = len(jobsites), demotype = POST_REQUEST['requesttype'], user = POST_REQUEST['user'], page = "scan", jobsbycompany = jobsbycompany, jobsbyonet = jobsbyonet, onetcounts = onetcounts, onetdesctocode = onetdesctocode)
+
+
+@route('/autopost', method='GET')
+def autopost(): 
+	API_REQUEST = request.GET
+	return apilib.autoPost(API_REQUEST)
 
 @route('/test')
 def test():
