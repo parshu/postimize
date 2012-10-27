@@ -29,6 +29,33 @@ CONFIG = {
 						},
 					"type": "form"
 
+				},
+				{
+					"url": "",
+					"formname": "",
+					"formindex":0,
+					"inputs": {
+							0 : "jo"
+						},
+					"type": "form"
+
+				},
+				{
+					"url": "",
+					"formname": "",
+					"formindex":0,
+					"type": "form"
+
+				},
+				{
+					"url": "",
+					"formname": "",
+					"formindex":0,
+					"inputs": {
+							0 : "23"
+						},
+					"type": "form"
+
 				}
 				
 
@@ -36,9 +63,6 @@ CONFIG = {
 			]
 			
 			
-		},
-		{
-						
 		}
 		
 	]

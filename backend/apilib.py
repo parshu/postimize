@@ -22,6 +22,7 @@ TIMEOUT = 5
 def autoPost(API_REQUEST):
 	br = mechanize.Browser()
 	br.set_handle_robots(False)
+	response = ""
 	for destination in destinations.CONFIG["destinations"]:
 		site = destination["site"]
 		print "Processing site: %s" % (site)
@@ -39,11 +40,13 @@ def autoPost(API_REQUEST):
 				else:
 					if(formname == ""):
 						br.select_form(nr=step["formindex"])
-						for input in step["inputs"].keys():
-							if( type(input) == int):
-								br.find_control(type="select", nr=0).get("570").selected = True
-								response = br.submit()
-								return response.read()
+						if(step.has_key("inputs")):
+							for input in step["inputs"].keys():
+								if( type(input) == int):
+									br.find_control(nr=input).get(step["inputs"][input]).selected = True
+								else:
+									br[input] = step["inputs"][input]
+						response = br.submit()
 					else:
 						pass
 				
@@ -52,7 +55,7 @@ def autoPost(API_REQUEST):
 			elif(step["type"] == "followlink"):
 				response = br.open("https://post.craigslist.org")
 				
-			
+	return response.read()	
 			
 			
 
