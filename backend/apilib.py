@@ -18,8 +18,28 @@ import mechanize
 import pybrowser
 import re
 TIMEOUT = 5
+import imaplib
+
+def getLatestCLPostLink(username, password, subject):
+	mail = imaplib.IMAP4_SSL('imap.gmail.com')
+	mail.login(username, password)
+	mail.select("inbox") # connect to inbox.
+	result, data = mail.search(None, 'SUBJECT', subject)
+	ids = data[0]
+	id_list = ids.split() # ids is a space separated string
+	try:
+		latest_email_id = id_list[-1]
+		result, data = mail.fetch(latest_email_id, "(RFC822)") # fetch the email body (RFC822) for the given ID
+		raw_email = data[0][1]
+	except IndexError, e:
+		raw_email = ""
+	
+	return raw_email
+	
+
 
 def autoPost(API_REQUEST):
+	jsonresp = {'username': API_REQUEST['username'], 'postedurl': 'Error Processing Request'}
 	br = mechanize.Browser()
 	br.set_handle_robots(False)
 	response = ""
@@ -62,14 +82,54 @@ def autoPost(API_REQUEST):
 				response = br.open("https://post.craigslist.org")
 			elif(step["type"] == "followlink"):
 				response = br.open("https://post.craigslist.org")
-				
-	return response.read()	
+			elif(step["type"] == "emailaction"):
+				subjectsearch = step["searchkey"]
+				if((subjectsearch.find("[") >= 0) and (subjectsearch.find("]") >= 0)):
+					field = subjectsearch.split("[")[1].split("]")[0]
+					p = re.compile('\[.*\]')
+					subjectsearch = p.subn(API_REQUEST[field],subjectsearch)[0]
+				time.sleep(step["delay"])
+				print subjectsearch
+				email = getLatestCLPostLink(step["username"], step["password"], subjectsearch)
+				'''email = email.replace(" ","")
+				email = email.replace("\n","")
+				email = email.replace("\r","")'''
+				print "Email:\"" + email + "\""
+				sys.stdout.flush()
+				p = re.compile(step["linkpattern"])
+				retresult = 0
+				if(email == ""):
+					subjectsearch = step["postedkey"]
+					if((subjectsearch.find("[") >= 0) and (subjectsearch.find("]") >= 0)):
+						field = subjectsearch.split("[")[1].split("]")[0]
+						p = re.compile('\[.*\]')
+						subjectsearch = p.subn(API_REQUEST[field],subjectsearch)[0]
+						email = getLatestCLPostLink(step["username"], step["password"], subjectsearch)
+						p = re.compile(step["postedlinkpattern"])
+						retresult = 1
+						
+				res = p.search(email).group()
+				if(step.has_key("linkbef")):
+					res = res.lstrip(step["linkbef"])
+				if(step.has_key("linkafter")):
+					res = res.split(step["linkafter"])[0]
+				if(retresult == 1):
+					jsonresp['postedurl'] = res
+					return 'Posted to : <a href="%s">%s</a>' % (jsonresp['postedurl'], jsonresp['postedurl'])
+				else:			
+					response = br.open(res)	
+			elif(step["type"] == "result"):
+				jsonresp['postedurl'] = br.find_link(nr=step["linkindex"]).url()			
+	return 	'Posted to : <a href="%s">%s</a>' % (jsonresp['postedurl'], jsonresp['postedurl'])
 			
 			
 
 if __name__ == '__main__':
-	API_REQUEST = {"username": "paccha9999", "password": "u4muixarm7tdmi"}
+	'''API_REQUEST = {"username": "paccha9999", "password": "u4muixarm7tdmi"}
 	print autoPost(API_REQUEST)
-	sys.stdout.flush()		
+	sys.stdout.flush()'''
+	email = getLatestCLPostLink("postimize1@gmail.com", "u4muixarm7tdmi", "POST/EDIT/DELETE: \"Assistant\"")
+	p = re.compile('https://post.craigslist.*\W')
+	print "\"" + p.search(email).group() + "\""
 
 

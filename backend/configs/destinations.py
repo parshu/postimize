@@ -76,6 +76,22 @@ CONFIG = {
 					"formindex":0,
 					"type": "form"
 
+				},
+				{
+					"type": "emailaction",
+					"username":"postimize1@gmail.com",
+					"password": "u4muixarm7tdmi",
+					"searchkey": "POST/EDIT/DELETE: \"[title]\"",
+					"postedkey": "\"[title]\"",
+					"delay": 5,
+					"linkpattern": "https://post.craigslist.*\W",
+					"linkafter": "\r",
+					"postedlinkpattern": "http://.*\W"
+				},
+				{
+					"type": "result",
+					"linkindex": 3
+				
 				}
 				
 
