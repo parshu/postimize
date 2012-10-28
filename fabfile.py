@@ -11,7 +11,7 @@ env.deploy_path = './gigzibit'
 
 @roles('box')
 def deploy():
-    local('tar -zcvf deploy.tgz batch bootstrap HTML-KickStart dist app demojobs.csv jobsites.csv restart.sh templates main.py requirements.*')
+    local('tar -zcvf deploy.tgz batch backend bootstrap HTML-KickStart dist app demojobs.csv jobsites.csv restart.sh templates main.py requirements.*')
     put ('deploy.tgz', env.code_path)
     run('tar -C %s -zxvf %s/deploy.tgz' % (env.deploy_path, env.code_path))
 
