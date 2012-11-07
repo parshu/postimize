@@ -1,23 +1,33 @@
 
 CONFIG = {
 	"dbname": "gigzibit",
+	"temphtmllog": "/Users/parkulkarni/html/temphtml.html",
+	"wait": True,
 	"destinations" : [
 		{
 			"site": "craigslist.org",
-			"postingsteps": [
+			"loginsteps": [
 				{
 					"url": "https://accounts.craigslist.org/login",
 					"formname": "login",
 					"inputs": {
-							"inputEmailHandle": "username",
-							"inputPassword": "password"
+							"inputEmailHandle": "[username]",
+							"inputPassword": "[password]"
 						},
-					"type": "form"
+					"type": "form",
+					"validationtext": "log out"
 
+				}
+			],
+			"postingsteps": [
+				{
+					"url": "[posturl]",
+					"type": "newlink"
+				
 				},
 				{
-					"url": "https://post.craigslist.org",
-					"type": "newlink"
+					"linktext":"post to classifieds",
+					"type": "followlink"
 
 				},
 				{
